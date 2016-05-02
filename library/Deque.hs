@@ -64,6 +64,15 @@ reverse :: Deque a -> Deque a
 reverse (Deque snocList consList) =
   Deque consList snocList
 
+tail :: Deque a -> Deque a
+tail =
+  fromMaybe <$> id <*> fmap snd . uncons
+
+init :: Deque a -> Deque a
+init =
+  fromMaybe <$> id <*> fmap snd . unsnoc
+
+
 instance Monoid (Deque a) where
   mempty =
     Deque [] []
