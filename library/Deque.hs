@@ -7,16 +7,10 @@ data Deque a =
   Deque ![a] ![a]
 
 shiftRight :: Deque a -> Deque a
-shiftRight (Deque snocList consList) =
-  case consList of
-    head : tail ->
-      Deque (head : snocList) tail
-    _ ->
-      case reverse snocList of
-        head : tail ->
-          Deque (head : []) tail
-        _ ->
-          Deque snocList consList
+shiftRight deque =
+  fromMaybe deque $
+  fmap (\(a, b) -> snoc a b) $
+  uncons deque
 
 shiftLeft :: Deque a -> Deque a
 shiftLeft deque =
@@ -33,17 +27,16 @@ snoc a (Deque snocList consList) =
   Deque (a : snocList) (consList)
 
 uncons :: Deque a -> Maybe (a, Deque a)
-uncons deque =
-  unconsWithoutBalancing deque <|>
-  unconsWithoutBalancing (shiftRight deque)
-
-unconsWithoutBalancing :: Deque a -> Maybe (a, Deque a)
-unconsWithoutBalancing (Deque snocList consList) =
+uncons (Deque snocList consList) =
   case consList of
     head : tail ->
       Just (head, Deque snocList tail)
     _ ->
-      Nothing
+      case reverse snocList of
+        head : tail ->
+          Just (head, Deque [] tail)
+        _ ->
+          Nothing
 
 unsnoc :: Deque a -> Maybe (a, Deque a)
 unsnoc (Deque snocList consList) =
