@@ -69,3 +69,11 @@ instance Monoid (Deque a) where
     Deque [] []
   mappend =
     prepend
+
+instance Foldable Deque where
+  foldr step init (Deque snocList consList) =
+    foldr step (foldl' (flip step) init snocList) consList
+  foldl' step init (Deque snocList consList) =
+    foldr' (flip step) (foldl' step init consList) snocList
+
+deriving instance Functor Deque
