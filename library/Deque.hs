@@ -1,6 +1,7 @@
 module Deque where
 
-import BasePrelude hiding (uncons, unsnoc, cons, snoc)
+import BasePrelude hiding (uncons, unsnoc, cons, snoc, reverse)
+import qualified BasePrelude
 
 
 data Deque a =
@@ -32,7 +33,7 @@ uncons (Deque snocList consList) =
     head : tail ->
       Just (head, Deque snocList tail)
     _ ->
-      case reverse snocList of
+      case BasePrelude.reverse snocList of
         head : tail ->
           Just (head, Deque [] tail)
         _ ->
@@ -44,8 +45,27 @@ unsnoc (Deque snocList consList) =
     head : tail ->
       Just (head, Deque tail consList)
     _ ->
-      case reverse consList of
+      case BasePrelude.reverse consList of
         head : tail ->
           Just (head, Deque tail [])
         _ ->
           Nothing
+
+prepend :: Deque a -> Deque a -> Deque a
+prepend (Deque snocList1 consList1) (Deque snocList2 consList2) =
+  Deque snocList3 consList3
+  where
+    snocList3 =
+      snocList2 ++ BasePrelude.reverse consList2 ++ snocList1
+    consList3 =
+      consList1
+
+reverse :: Deque a -> Deque a
+reverse (Deque snocList consList) =
+  Deque consList snocList
+
+instance Monoid (Deque a) where
+  mempty =
+    Deque [] []
+  mappend =
+    prepend
