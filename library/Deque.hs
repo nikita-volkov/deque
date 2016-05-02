@@ -70,7 +70,7 @@ prepend (Deque snocList1 consList1) (Deque snocList2 consList2) =
   Deque snocList3 consList3
   where
     snocList3 =
-      snocList2 ++ BasePrelude.reverse consList2 ++ snocList1
+      snocList2 ++ foldl' (flip (:)) snocList1 consList2
     consList3 =
       consList1
 
