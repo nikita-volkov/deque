@@ -8,6 +8,12 @@ data Deque a =
   Deque ![a] ![a]
 
 -- |
+-- /O(1)/.
+fromList :: [a] -> Deque a
+fromList list =
+  Deque [] list
+
+-- |
 -- /O(1)/, sometimes /O(n)/.
 shiftRight :: Deque a -> Deque a
 shiftRight deque =
