@@ -5,7 +5,7 @@ import qualified BasePrelude
 
 
 data Deque a =
-  Deque ![a] ![a]
+  Deque [a] [a]
 
 -- |
 -- /O(1)/.
