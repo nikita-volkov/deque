@@ -14,7 +14,7 @@ fromList list =
   Deque [] list
 
 -- |
--- /O(1)/, sometimes /O(n)/.
+-- /O(1)/, occasionally /O(n)/.
 shiftRight :: Deque a -> Deque a
 shiftRight deque =
   fromMaybe deque $
@@ -22,7 +22,7 @@ shiftRight deque =
   uncons deque
 
 -- |
--- /O(1)/, sometimes /O(n)/.
+-- /O(1)/, occasionally /O(n)/.
 shiftLeft :: Deque a -> Deque a
 shiftLeft deque =
   fromMaybe deque $
@@ -42,7 +42,7 @@ snoc a (Deque snocList consList) =
   Deque (a : snocList) (consList)
 
 -- |
--- /O(1)/, sometimes /O(n)/.
+-- /O(1)/, occasionally /O(n)/.
 uncons :: Deque a -> Maybe (a, Deque a)
 uncons (Deque snocList consList) =
   case consList of
@@ -56,7 +56,7 @@ uncons (Deque snocList consList) =
           Nothing
 
 -- |
--- /O(1)/, sometimes /O(n)/.
+-- /O(1)/, occasionally /O(n)/.
 unsnoc :: Deque a -> Maybe (a, Deque a)
 unsnoc (Deque snocList consList) =
   case snocList of
@@ -87,13 +87,13 @@ reverse (Deque snocList consList) =
   Deque consList snocList
 
 -- |
--- /O(1)/, sometimes /O(n)/.
+-- /O(1)/, occasionally /O(n)/.
 tail :: Deque a -> Deque a
 tail =
   fromMaybe <$> id <*> fmap snd . uncons
 
 -- |
--- /O(1)/, sometimes /O(n)/.
+-- /O(1)/, occasionally /O(n)/.
 init :: Deque a -> Deque a
 init =
   fromMaybe <$> id <*> fmap snd . unsnoc
