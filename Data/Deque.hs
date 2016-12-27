@@ -1,11 +1,27 @@
-module Deque where
+{-# LANGUAGE DeriveFunctor #-}
 
-import BasePrelude hiding (uncons, unsnoc, cons, snoc, reverse)
-import qualified BasePrelude
+module Data.Deque where
 
+import Data.Foldable
+import Data.Maybe (fromMaybe)
+import Data.Monoid
+import Prelude as P
 
-data Deque a =
-  Deque [a] [a]
+---
+
+data Deque a = Deque [a] [a] deriving (Eq, Show, Functor)
+
+instance Monoid (Deque a) where
+  mempty =
+    Deque [] []
+  mappend =
+    prepend
+
+instance Foldable Deque where
+  foldr step init (Deque snocList consList) =
+    foldr step (foldl' (flip step) init snocList) consList
+  foldl' step init (Deque snocList consList) =
+    foldr' (flip step) (foldl' step init consList) snocList
 
 -- |
 -- /O(1)/.
@@ -49,7 +65,7 @@ uncons (Deque snocList consList) =
     head : tail ->
       Just (head, Deque snocList tail)
     _ ->
-      case BasePrelude.reverse snocList of
+      case P.reverse snocList of
         head : tail ->
           Just (head, Deque [] tail)
         _ ->
@@ -63,7 +79,7 @@ unsnoc (Deque snocList consList) =
     head : tail ->
       Just (head, Deque tail consList)
     _ ->
-      case BasePrelude.reverse consList of
+      case P.reverse consList of
         head : tail ->
           Just (head, Deque tail [])
         _ ->
@@ -97,18 +113,3 @@ tail =
 init :: Deque a -> Deque a
 init =
   fromMaybe <$> id <*> fmap snd . unsnoc
-
-
-instance Monoid (Deque a) where
-  mempty =
-    Deque [] []
-  mappend =
-    prepend
-
-instance Foldable Deque where
-  foldr step init (Deque snocList consList) =
-    foldr step (foldl' (flip step) init snocList) consList
-  foldl' step init (Deque snocList consList) =
-    foldr' (flip step) (foldl' step init consList) snocList
-
-deriving instance Functor Deque
