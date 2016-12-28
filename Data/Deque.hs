@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE ViewPatterns #-}
 
 -- |
 -- Module    : Data.Deque
@@ -30,7 +31,8 @@ import           Prelude hiding (head, tail, init, last, reverse)
 
 ---
 
-data Deque a = Deque [a] [a] deriving (Eq, Show, Functor)
+-- | A double-ended queue, which can be cycled. See `shiftLeft` and `shiftRight`.
+data Deque a = Deque { _snoc :: [a], _cons :: [a] } deriving (Eq, Show, Functor)
 
 instance Monoid (Deque a) where
   mempty = Deque [] []
@@ -77,28 +79,15 @@ snoc a (Deque snocList consList) = Deque (a : snocList) consList
 
 -- | /O(1)/, occasionally /O(n)/.
 uncons :: Deque a -> Maybe (a, Deque a)
-uncons (Deque snocList consList) =
-  case consList of
-    head : tail -> Just (head, Deque snocList tail)
-    _ ->
-      case P.reverse snocList of
-        head : tail ->
-          Just (head, Deque [] tail)
-        _ ->
-          Nothing
+uncons (Deque ss (c:cs)) = Just (c, Deque ss cs)
+uncons (P.reverse . _snoc -> (s:ss)) = Just (s, Deque [] ss)
+uncons _ = Nothing
 
 -- | /O(1)/, occasionally /O(n)/.
 unsnoc :: Deque a -> Maybe (a, Deque a)
-unsnoc (Deque snocList consList) =
-  case snocList of
-    head : tail ->
-      Just (head, Deque tail consList)
-    _ ->
-      case P.reverse consList of
-        head : tail ->
-          Just (head, Deque tail [])
-        _ ->
-          Nothing
+unsnoc (Deque (s:ss) cs) = Just (s, Deque ss cs)
+unsnoc (P.reverse . _cons -> (c:cs)) = Just (c, Deque cs [])
+unsnoc _ = Nothing
 
 -- | /O(1)/.
 reverse :: Deque a -> Deque a
