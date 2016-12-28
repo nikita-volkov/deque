@@ -22,6 +22,6 @@ library
 
   exposed-modules:  Data.Deque
 
-  build-depends:    base >= 4.9 && < 4.10
+  build-depends:    base >= 4.8 && < 4.10
 
   ghc-options:      -fwarn-unused-imports -fwarn-unused-binds
