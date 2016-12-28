@@ -47,6 +47,14 @@ instance Foldable Deque where
   foldl' step init (Deque snocList consList) =
     foldr' (flip step) (foldl' step init consList) snocList
 
+instance Applicative Deque where
+  pure a = Deque [] [a]
+  fs <*> as = fromList (toList fs <*> toList as)
+
+instance Monad Deque where
+  return = pure
+  m >>= f = fromList (toList m >>= toList . f)
+
 -- | /O(1)/. `toList` is available from the `Foldable` instance.
 fromList :: [a] -> Deque a
 fromList = Deque []
