@@ -47,6 +47,10 @@ instance Foldable Deque where
   foldl' step init (Deque snocList consList) =
     foldr' (flip step) (foldl' step init consList) snocList
 
+instance Traversable Deque where
+  traverse f (Deque ss cs) =
+    (\cs' ss' -> Deque (P.reverse ss') cs') <$> traverse f cs <*> traverse f (P.reverse ss)
+
 instance Applicative Deque where
   pure a = Deque [] [a]
   fs <*> as = fromList (toList fs <*> toList as)
