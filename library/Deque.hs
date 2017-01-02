@@ -1,42 +1,141 @@
+module Deque where
+
+import Prelude hiding (foldr, foldr', foldl')
+import Control.Applicative
+import Data.Foldable
+import Data.Traversable
+import Data.Maybe
+import Data.Monoid
+
+
 -- |
--- Module    : Deque
--- Copyright : (c) Nikita Volkov, 2016
--- License   : MIT
--- Maintainer: Nikita Volkov <nikita.y.volkov@mail.ru>
+-- Double-ended queue (aka Dequeue or Deque) based on the head-tail linked list.
+-- Can be cycled. See `shiftLeft` and `shiftRight`.
+data Deque a =
+  Deque [a] [a]
+
+-- |
+-- /O(1)/.
+-- `toList` is available from the `Foldable` instance.
+fromList :: [a] -> Deque a
+fromList =
+  Deque []
+
+-- |
+-- /O(1)/, occasionally /O(n)/.
 --
--- Double-ended queues (aka Dequeue or Deque) based on the head-tail linked list.
+-- @
+-- λ toList . shiftLeft $ fromList [1,2,3]
+-- [2,3,1]
+-- @
+shiftLeft :: Deque a -> Deque a
+shiftLeft deque =
+  maybe deque (uncurry snoc) (uncons deque)
 
-module Deque (
-  -- * Double-ended Queues
-  Deque
-  -- * Construction
-  , fromList
-  , cons, snoc
-  -- * Accessors
-  , uncons, unsnoc
-  , head, tail, init, last
-  -- * Permutations
-  , reverse
-  , shiftRight, shiftLeft
-  ) where
+-- |
+-- /O(1)/, occasionally /O(n)/.
+--
+-- @
+-- λ toList . shiftRight $ fromList [1,2,3]
+-- [3,1,2]
+-- @
+shiftRight :: Deque a -> Deque a
+shiftRight deque =
+  maybe deque (uncurry cons) (unsnoc deque)
 
-import           Data.Foldable
-import           Data.Maybe (fromMaybe)
-import           Data.Monoid
-import qualified Prelude as P
-import           Prelude hiding (head, tail, init, last, reverse)
+-- |
+-- /O(1)/.
+-- Prepend an element.
+cons :: a -> Deque a -> Deque a
+cons a (Deque snocList consList) =
+  Deque snocList (a : consList)
 
----
+-- |
+-- /O(1)/.
+-- Append an element.
+snoc :: a -> Deque a -> Deque a
+snoc a (Deque snocList consList) =
+  Deque (a : snocList) consList
 
--- | A double-ended queue, which can be cycled. See `shiftLeft` and `shiftRight`.
-data Deque a = Deque { _snoc :: [a], _cons :: [a] } deriving (Eq, Show, Functor)
+-- |
+-- /O(1)/, occasionally /O(n)/.
+uncons :: Deque a -> Maybe (a, Deque a)
+uncons (Deque snocList consList) =
+  case consList of
+    head : tail ->
+      Just (head, Deque snocList tail)
+    _ ->
+      case Prelude.reverse snocList of
+        head : tail ->
+          Just (head, Deque [] tail)
+        _ ->
+          Nothing
+
+-- |
+-- /O(1)/, occasionally /O(n)/.
+unsnoc :: Deque a -> Maybe (a, Deque a)
+unsnoc (Deque snocList consList) =
+  case snocList of
+    head : tail ->
+      Just (head, Deque tail consList)
+    _ ->
+      case Prelude.reverse consList of
+        head : tail ->
+          Just (head, Deque tail [])
+        _ ->
+          Nothing
+
+-- |
+-- /O(n)/.
+prepend :: Deque a -> Deque a -> Deque a
+prepend (Deque snocList1 consList1) (Deque snocList2 consList2) =
+  Deque snocList3 consList3
+  where
+    snocList3 =
+      snocList2 ++ foldl' (flip (:)) snocList1 consList2
+    consList3 =
+      consList1
+
+-- |
+-- /O(1)/.
+reverse :: Deque a -> Deque a
+reverse (Deque snocList consList) =
+  Deque consList snocList
+
+-- |
+-- /O(1)/, occasionally /O(n)/.
+head :: Deque a -> Maybe a
+head =
+  fmap fst . uncons
+
+-- |
+-- /O(1)/, occasionally /O(n)/.
+tail :: Deque a -> Deque a
+tail =
+  fromMaybe <$> id <*> fmap snd . uncons
+
+-- |
+-- /O(1)/, occasionally /O(n)/.
+init :: Deque a -> Deque a
+init =
+  fromMaybe <$> id <*> fmap snd . unsnoc
+
+-- |
+-- /O(1)/, occasionally /O(n)/.
+last :: Deque a -> Maybe a
+last =
+  fmap fst . unsnoc
+
+
+deriving instance Eq a => Eq (Deque a)
+
+deriving instance Show a => Show (Deque a)
 
 instance Monoid (Deque a) where
-  mempty = Deque [] []
-
-  -- | /O(n)/.
-  mappend (Deque s1 c1) (Deque s2 c2) = Deque s3 c1
-    where s3 = s2 ++ foldl' (flip (:)) s1 c2
+  mempty =
+    Deque [] []
+  mappend =
+    prepend
 
 instance Foldable Deque where
   foldr step init (Deque snocList consList) =
@@ -46,74 +145,18 @@ instance Foldable Deque where
 
 instance Traversable Deque where
   traverse f (Deque ss cs) =
-    (\cs' ss' -> Deque (P.reverse ss') cs') <$> traverse f cs <*> traverse f (P.reverse ss)
+    (\cs' ss' -> Deque (Prelude.reverse ss') cs') <$> traverse f cs <*> traverse f (Prelude.reverse ss)
+
+deriving instance Functor Deque
 
 instance Applicative Deque where
-  pure a = Deque [] [a]
-  fs <*> as = fromList (toList fs <*> toList as)
+  pure a =
+    Deque [] [a]
+  fs <*> as =
+    fromList (toList fs <*> toList as)
 
 instance Monad Deque where
-  return = pure
-  m >>= f = fromList (toList m >>= toList . f)
-
--- | /O(1)/. `toList` is available from the `Foldable` instance.
-fromList :: [a] -> Deque a
-fromList = Deque []
-
--- | /O(1)/, occasionally /O(n)/.
---
--- @
--- λ toList . shiftLeft $ fromList [1,2,3]
--- [2,3,1]
--- @
-shiftLeft :: Deque a -> Deque a
-shiftLeft deque = maybe deque (uncurry snoc) $ uncons deque
-
--- | /O(1)/, occasionally /O(n)/.
---
--- @
--- λ toList . shiftRight $ fromList [1,2,3]
--- [3,1,2]
--- @
-shiftRight :: Deque a -> Deque a
-shiftRight deque = maybe deque (uncurry cons) $ unsnoc deque
-
--- | /O(1)/. Prepend an element.
-cons :: a -> Deque a -> Deque a
-cons a (Deque snocList consList) = Deque snocList (a : consList)
-
--- | /O(1)/. Append an element.
-snoc :: a -> Deque a -> Deque a
-snoc a (Deque snocList consList) = Deque (a : snocList) consList
-
--- | /O(1)/, occasionally /O(n)/.
-uncons :: Deque a -> Maybe (a, Deque a)
-uncons (Deque ss (c:cs)) = Just (c, Deque ss cs)
-uncons (P.reverse . _snoc -> (s:ss)) = Just (s, Deque [] ss)
-uncons _ = Nothing
-
--- | /O(1)/, occasionally /O(n)/.
-unsnoc :: Deque a -> Maybe (a, Deque a)
-unsnoc (Deque (s:ss) cs) = Just (s, Deque ss cs)
-unsnoc (P.reverse . _cons -> (c:cs)) = Just (c, Deque cs [])
-unsnoc _ = Nothing
-
--- | /O(1)/.
-reverse :: Deque a -> Deque a
-reverse (Deque snocList consList) = Deque consList snocList
-
--- | /O(1)/, occasionally /O(n)/.
-head :: Deque a -> Maybe a
-head = fmap fst . uncons
-
--- | /O(1)/, occasionally /O(n)/.
-tail :: Deque a -> Deque a
-tail = fromMaybe <$> id <*> fmap snd . uncons
-
--- | /O(1)/, occasionally /O(n)/.
-init :: Deque a -> Deque a
-init = fromMaybe <$> id <*> fmap snd . unsnoc
-
--- | /O(1)/, occasionally /O(n)/.
-last :: Deque a -> Maybe a
-last = fmap fst . unsnoc
+  return =
+    pure
+  m >>= f =
+    fromList (toList m >>= toList . f)
