@@ -1,45 +1,61 @@
 module Deque where
 
-import BasePrelude hiding (uncons, unsnoc, cons, snoc, reverse)
-import qualified BasePrelude
+import Prelude hiding (foldr, foldr', foldl')
+import Control.Applicative
+import Data.Foldable
+import Data.Traversable
+import Data.Maybe
+import Data.Monoid
 
 
+-- |
+-- Double-ended queue (aka Dequeue or Deque) based on the head-tail linked list.
+-- Can be cycled. See `shiftLeft` and `shiftRight`.
 data Deque a =
   Deque [a] [a]
 
 -- |
 -- /O(1)/.
+-- `toList` is available from the `Foldable` instance.
 fromList :: [a] -> Deque a
-fromList list =
-  Deque [] list
+fromList =
+  Deque []
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
-shiftRight :: Deque a -> Deque a
-shiftRight deque =
-  fromMaybe deque $
-  fmap (\(a, b) -> snoc a b) $
-  uncons deque
-
--- |
--- /O(1)/, occasionally /O(n)/.
+--
+-- @
+-- λ toList . shiftLeft $ fromList [1,2,3]
+-- [2,3,1]
+-- @
 shiftLeft :: Deque a -> Deque a
 shiftLeft deque =
-  fromMaybe deque $
-  fmap (\(a, b) -> cons a b) $
-  unsnoc deque
+  maybe deque (uncurry snoc) (uncons deque)
+
+-- |
+-- /O(1)/, occasionally /O(n)/.
+--
+-- @
+-- λ toList . shiftRight $ fromList [1,2,3]
+-- [3,1,2]
+-- @
+shiftRight :: Deque a -> Deque a
+shiftRight deque =
+  maybe deque (uncurry cons) (unsnoc deque)
 
 -- |
 -- /O(1)/.
+-- Prepend an element.
 cons :: a -> Deque a -> Deque a
 cons a (Deque snocList consList) =
-  Deque (snocList) (a : consList)
+  Deque snocList (a : consList)
 
 -- |
 -- /O(1)/.
+-- Append an element.
 snoc :: a -> Deque a -> Deque a
 snoc a (Deque snocList consList) =
-  Deque (a : snocList) (consList)
+  Deque (a : snocList) consList
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
@@ -49,7 +65,7 @@ uncons (Deque snocList consList) =
     head : tail ->
       Just (head, Deque snocList tail)
     _ ->
-      case BasePrelude.reverse snocList of
+      case Prelude.reverse snocList of
         head : tail ->
           Just (head, Deque [] tail)
         _ ->
@@ -63,7 +79,7 @@ unsnoc (Deque snocList consList) =
     head : tail ->
       Just (head, Deque tail consList)
     _ ->
-      case BasePrelude.reverse consList of
+      case Prelude.reverse consList of
         head : tail ->
           Just (head, Deque tail [])
         _ ->
@@ -88,6 +104,12 @@ reverse (Deque snocList consList) =
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
+head :: Deque a -> Maybe a
+head =
+  fmap fst . uncons
+
+-- |
+-- /O(1)/, occasionally /O(n)/.
 tail :: Deque a -> Deque a
 tail =
   fromMaybe <$> id <*> fmap snd . uncons
@@ -98,6 +120,16 @@ init :: Deque a -> Deque a
 init =
   fromMaybe <$> id <*> fmap snd . unsnoc
 
+-- |
+-- /O(1)/, occasionally /O(n)/.
+last :: Deque a -> Maybe a
+last =
+  fmap fst . unsnoc
+
+
+deriving instance Eq a => Eq (Deque a)
+
+deriving instance Show a => Show (Deque a)
 
 instance Monoid (Deque a) where
   mempty =
@@ -111,4 +143,20 @@ instance Foldable Deque where
   foldl' step init (Deque snocList consList) =
     foldr' (flip step) (foldl' step init consList) snocList
 
+instance Traversable Deque where
+  traverse f (Deque ss cs) =
+    (\cs' ss' -> Deque (Prelude.reverse ss') cs') <$> traverse f cs <*> traverse f (Prelude.reverse ss)
+
 deriving instance Functor Deque
+
+instance Applicative Deque where
+  pure a =
+    Deque [] [a]
+  fs <*> as =
+    fromList (toList fs <*> toList as)
+
+instance Monad Deque where
+  return =
+    pure
+  m >>= f =
+    fromList (toList m >>= toList . f)
