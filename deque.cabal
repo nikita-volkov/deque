@@ -1,27 +1,45 @@
-name:          deque
-version:       0.2.0
-synopsis:      Featureful double-ended queues.
-description:   An implementation of double-ended queue (aka Dequeue or Deque)
-               based on the head-tail linked list.
-homepage:      https://github.com/nikita-volkov/deque
-bug-reports:   https://github.com/nikita-volkov/deque/issues
-author:        Nikita Volkov <nikita.y.volkov@mail.ru>
-maintainer:    Nikita Volkov <nikita.y.volkov@mail.ru>
-copyright:     (c) 2016, Nikita Volkov
-license:       MIT
-license-file:  LICENSE
-build-type:    Simple
-cabal-version: >=1.10
+name:
+  deque
+version:
+  0.2.0
+synopsis:
+  Featureful double-ended queues.
+description:
+  An implementation of double-ended queue (aka Dequeue or Deque)
+  based on the head-tail linked list.
+homepage:
+  https://github.com/nikita-volkov/deque
+bug-reports:
+  https://github.com/nikita-volkov/deque/issues
+author:
+  Nikita Volkov <nikita.y.volkov@mail.ru>
+maintainer:
+  Nikita Volkov <nikita.y.volkov@mail.ru>
+copyright:
+  (c) 2016, Nikita Volkov
+license:
+  MIT
+license-file:
+  LICENSE
+build-type:
+  Simple
+cabal-version:
+  >=1.10
 
 source-repository head
-  type: git
-  location: git://github.com/nikita-volkov/deque.git
+  type:
+    git
+  location:
+    git://github.com/nikita-volkov/deque.git
 
 library
-  default-language: Haskell2010
-
-  exposed-modules:  Data.Deque
-
-  build-depends:    base >= 4.8 && < 4.10
-
-  ghc-options:      -fwarn-unused-imports -fwarn-unused-binds
+  hs-source-dirs:
+    library
+  default-extensions:
+    DeriveFunctor, ViewPatterns
+  default-language:
+    Haskell2010
+  exposed-modules:
+    Deque
+  build-depends:
+    base >= 4.8 && < 4.10

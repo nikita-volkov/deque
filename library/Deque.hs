@@ -1,15 +1,12 @@
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE ViewPatterns #-}
-
 -- |
--- Module    : Data.Deque
+-- Module    : Deque
 -- Copyright : (c) Nikita Volkov, 2016
 -- License   : MIT
 -- Maintainer: Nikita Volkov <nikita.y.volkov@mail.ru>
 --
 -- Double-ended queues (aka Dequeue or Deque) based on the head-tail linked list.
 
-module Data.Deque (
+module Deque (
   -- * Double-ended Queues
   Deque
   -- * Construction
