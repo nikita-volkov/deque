@@ -160,3 +160,11 @@ instance Monad Deque where
     pure
   m >>= f =
     fromList (toList m >>= toList . f)
+
+instance Alternative Deque where
+  empty =
+    Deque [] []
+  (<|>) =
+    prepend
+
+instance MonadPlus Deque
