@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module Deque where
 
 import Prelude hiding (foldr, foldr', foldl')
@@ -5,8 +6,8 @@ import Control.Applicative
 import Data.Foldable
 import Data.Traversable
 import Data.Maybe
-import Data.Monoid
-
+import Data.Monoid hiding ((<>))
+import Data.Semigroup as Sem
 
 -- |
 -- Double-ended queue (aka Dequeue or Deque) based on the head-tail linked list.
@@ -131,11 +132,16 @@ deriving instance Eq a => Eq (Deque a)
 
 deriving instance Show a => Show (Deque a)
 
+instance Sem.Semigroup (Deque a) where
+  (<>) = prepend
+
 instance Monoid (Deque a) where
   mempty =
     Deque [] []
+#if !(MIN_VERSION_base(4,11,0))
   mappend =
-    prepend
+    (<>)
+#endif
 
 instance Foldable Deque where
   foldr step init (Deque snocList consList) =
