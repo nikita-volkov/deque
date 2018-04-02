@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 module Deque where
 
 import Prelude hiding (foldr, foldr', foldl')
@@ -138,10 +137,8 @@ instance Semigroup (Deque a) where
 instance Monoid (Deque a) where
   mempty =
     Deque [] []
-#if !(MIN_VERSION_base(4,11,0))
   mappend =
     (<>)
-#endif
 
 instance Foldable Deque where
   foldr step init (Deque snocList consList) =
