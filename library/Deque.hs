@@ -6,8 +6,8 @@ import Control.Monad
 import Data.Foldable
 import Data.Traversable
 import Data.Maybe
-import Data.Monoid
-
+import Data.Monoid hiding ((<>))
+import Data.Semigroup
 
 -- |
 -- Double-ended queue (aka Dequeue or Deque) based on the head-tail linked list.
@@ -132,11 +132,14 @@ deriving instance Eq a => Eq (Deque a)
 
 deriving instance Show a => Show (Deque a)
 
+instance Semigroup (Deque a) where
+  (<>) = prepend
+
 instance Monoid (Deque a) where
   mempty =
     Deque [] []
   mappend =
-    prepend
+    (<>)
 
 instance Foldable Deque where
   foldr step init (Deque snocList consList) =

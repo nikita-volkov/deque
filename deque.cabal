@@ -1,7 +1,7 @@
 name:
   deque
 version:
-  0.2
+  0.2.1
 synopsis:
   Double-ended queue
 description:
@@ -43,3 +43,6 @@ library
     Deque
   build-depends:
     base >= 4.6 && < 5
+  if impl(ghc < 8.0)
+    build-depends:
+      semigroups >= 0.11 && < 0.19
