@@ -2,6 +2,7 @@ module Deque where
 
 import Prelude hiding (foldr, foldr', foldl')
 import Control.Applicative
+import Control.Monad
 import Data.Foldable
 import Data.Traversable
 import Data.Maybe
@@ -163,8 +164,12 @@ instance Monad Deque where
 
 instance Alternative Deque where
   empty =
-    Deque [] []
+    mempty
   (<|>) =
-    prepend
+    mappend
 
-instance MonadPlus Deque
+instance MonadPlus Deque where
+  mzero =
+    empty
+  mplus =
+    (<|>)
