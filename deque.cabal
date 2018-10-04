@@ -1,7 +1,7 @@
 name:
   deque
 version:
-  0.2.1
+  0.2.2
 synopsis:
   Double-ended queue
 description:
