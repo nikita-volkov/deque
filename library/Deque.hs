@@ -3,6 +3,7 @@ module Deque where
 import Prelude hiding (foldr, foldr', foldl')
 import Control.Applicative
 import Control.Monad
+import Control.Monad.Fail
 import Data.Foldable
 import Data.Traversable
 import Data.Maybe
@@ -176,3 +177,6 @@ instance MonadPlus Deque where
     empty
   mplus =
     (<|>)
+
+instance MonadFail Deque where
+  fail = const mempty
