@@ -3,6 +3,7 @@ module Deque where
 import Prelude hiding (foldr, foldr', foldl')
 import Control.Applicative
 import Control.Monad
+import Control.Monad.Fail as Fail
 import Data.Foldable
 import Data.Traversable
 import Data.Maybe
@@ -164,6 +165,7 @@ instance Monad Deque where
     pure
   m >>= f =
     fromList (toList m >>= toList . f)
+  fail = Fail.fail
 
 instance Alternative Deque where
   empty =
@@ -176,3 +178,6 @@ instance MonadPlus Deque where
     empty
   mplus =
     (<|>)
+
+instance Fail.MonadFail Deque where
+  fail _ = mempty
