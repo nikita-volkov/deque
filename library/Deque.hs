@@ -165,6 +165,8 @@ instance Monad Deque where
     pure
   m >>= f =
     fromList (toList m >>= toList . f)
+  fail =
+    const mempty
 
 instance Alternative Deque where
   empty =
