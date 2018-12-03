@@ -9,6 +9,7 @@ import Data.Traversable
 import Data.Maybe
 import Data.Monoid hiding ((<>))
 import Data.Semigroup
+import qualified Data.List as List
 
 -- |
 -- Double-ended queue (aka Dequeue or Deque) based on the head-tail linked list.
@@ -22,6 +23,16 @@ data Deque a =
 fromList :: [a] -> Deque a
 fromList =
   Deque []
+
+-- |
+-- /O(n)/.
+-- Leave only the first elements satisfying the predicate.
+takeWhile :: (a -> Bool) -> Deque a -> Deque a
+takeWhile predicate (Deque snocList consList) =
+  let
+    newConsList = List.takeWhile predicate consList
+    newSnocList = List.takeWhile (not . predicate) snocList
+    in Deque newSnocList newConsList
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
