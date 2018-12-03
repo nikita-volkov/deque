@@ -42,5 +42,4 @@ library
   exposed-modules:
     Deque
   build-depends:
-    base >= 4.9 && < 5,
-    semigroups >= 0.11 && < 0.19
+    base >= 4.9 && < 5
