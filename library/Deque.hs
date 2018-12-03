@@ -30,9 +30,24 @@ fromList =
 takeWhile :: (a -> Bool) -> Deque a -> Deque a
 takeWhile predicate (Deque snocList consList) =
   let
-    newConsList = List.takeWhile predicate consList
-    newSnocList = List.takeWhile (not . predicate) snocList
-    in Deque newSnocList newConsList
+    newConsList = List.foldr
+      (\ a nextState -> if predicate a
+        then a : nextState
+        else [])
+      (List.takeWhile predicate (List.reverse snocList))
+      consList
+    in Deque [] newConsList
+
+-- |
+-- /O(n)/.
+-- Drop the first elements satisfying the predicate.
+dropWhile :: (a -> Bool) -> Deque a -> Deque a
+dropWhile predicate (Deque snocList consList) =
+  let
+    newConsList = List.dropWhile predicate consList
+    in case newConsList of
+      [] -> Deque [] (List.dropWhile predicate (List.reverse snocList))
+      _ -> Deque snocList newConsList
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
