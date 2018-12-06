@@ -131,6 +131,12 @@ reverse (Deque snocList consList) =
   Deque consList snocList
 
 -- |
+-- /O(1)/. 
+null :: Deque a -> Bool
+null (Deque snocList consList) =
+  List.null snocList && List.null consList
+
+-- |
 -- /O(1)/, occasionally /O(n)/.
 head :: Deque a -> Maybe a
 head =
