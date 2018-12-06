@@ -1,5 +1,5 @@
 name: deque
-version: 0.2.6
+version: 0.2.7
 synopsis: Double-ended queue
 description:
   An implementation of Double-Ended Queue (aka Dequeue or Deque)
