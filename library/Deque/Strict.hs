@@ -40,23 +40,25 @@ fromConsAndSnocLists consList snocList = Deque (fromList snocList) (fromList con
 
 -- |
 -- /O(1)/.
--- Prepend an element.
+-- Add element in the beginning.
 cons :: a -> Deque a -> Deque a
 cons a (Deque snocList consList) = Deque snocList (StrictList.Cons a consList)
 
 -- |
 -- /O(1)/.
--- Append an element.
+-- Add element in the ending.
 snoc :: a -> Deque a -> Deque a
 snoc a (Deque snocList consList) = Deque (StrictList.Cons a snocList) consList
 
 -- |
 -- /O(1)/.
+-- Revert the deque.
 reverse :: Deque a -> Deque a
 reverse (Deque snocList consList) = Deque consList snocList
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
+-- Move the first element to the end.
 --
 -- @
 -- λ toList . shiftLeft $ fromList [1,2,3]
@@ -67,6 +69,7 @@ shiftLeft deque = maybe deque (uncurry snoc) (uncons deque)
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
+-- Move the last element to the beginning.
 --
 -- @
 -- λ toList . shiftRight $ fromList [1,2,3]
@@ -110,6 +113,7 @@ dropWhile predicate (Deque snocList consList) = let
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
+-- Get the first element and deque without it if it's not empty.
 uncons :: Deque a -> Maybe (a, Deque a)
 uncons (Deque snocList consList) = case consList of
   StrictList.Cons head tail -> Just (head, Deque snocList tail)
@@ -119,6 +123,7 @@ uncons (Deque snocList consList) = case consList of
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
+-- Get the last element and deque without it if it's not empty.
 unsnoc :: Deque a -> Maybe (a, Deque a)
 unsnoc (Deque snocList consList) = case snocList of
   StrictList.Cons head tail -> Just (head, Deque tail consList)
@@ -128,6 +133,7 @@ unsnoc (Deque snocList consList) = case snocList of
 
 -- |
 -- /O(1)/. 
+-- Check whether deque is empty.
 null :: Deque a -> Bool
 null = \ case
   Deque StrictList.Nil StrictList.Nil -> True
@@ -135,6 +141,7 @@ null = \ case
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
+-- Get the first element if deque is not empty.
 head :: Deque a -> Maybe a
 head (Deque snocList consList) = case consList of
   StrictList.Cons head _ -> Just head
@@ -142,6 +149,7 @@ head (Deque snocList consList) = case consList of
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
+-- Get the last element if deque is not empty.
 last :: Deque a -> Maybe a
 last (Deque snocList consList) = case snocList of
   StrictList.Cons head _ -> Just head
@@ -149,6 +157,9 @@ last (Deque snocList consList) = case snocList of
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
+-- Keep all elements but the first one.
+-- 
+-- In case of empty deque returns an empty deque.
 tail :: Deque a -> Deque a
 tail (Deque snocList consList) = case consList of
   StrictList.Nil -> Deque StrictList.Nil (StrictList.reverseInit snocList)
@@ -156,6 +167,9 @@ tail (Deque snocList consList) = case consList of
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
+-- Keep all elements but the last one.
+-- 
+-- In case of empty deque returns an empty deque.
 init :: Deque a -> Deque a
 init (Deque snocList consList) = case snocList of
   StrictList.Nil -> Deque (StrictList.reverseInit consList) StrictList.Nil
