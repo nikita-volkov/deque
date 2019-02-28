@@ -24,12 +24,15 @@ library
   default-language: Haskell2010
   exposed-modules:
     Deque.Lazy
+    Deque.Lazy.State
     Deque.Strict
+    Deque.Strict.State
   other-modules:
     Deque.Prelude
     Deque.StrictList
   build-depends:
-    base >=4.9 && <5
+    base >=4.9 && <5,
+    mtl >=2.2 && <3
 
 test-suite test
   type: exitcode-stdio-1.0
