@@ -1,28 +1,42 @@
-module Deque where
+module Deque.Lazy
+(
+  Deque,
+  fromConsAndSnocLists,
+  cons,
+  snoc,
+  reverse,
+  shiftLeft,
+  shiftRight,
+  takeWhile,
+  dropWhile,
+  uncons,
+  unsnoc,
+  null,
+  head,
+  last,
+  tail,
+  init,
+)
+where
 
-import Prelude hiding (foldr, foldr', foldl')
-import Control.Applicative
-import Control.Monad
-import Control.Monad.Fail
-import Data.Foldable
-import Data.Traversable
-import Data.Maybe
-import Data.Monoid hiding ((<>))
-import Data.Semigroup
+import Control.Monad (fail)
+import Deque.Prelude hiding (tail, init, last, head, null, dropWhile, takeWhile, reverse)
 import qualified Data.List as List
+import qualified Deque.Prelude as Prelude
 
 -- |
--- Double-ended queue (aka Dequeue or Deque) based on the head-tail linked list.
+-- Lazy double-ended queue (aka Dequeue or Deque) based on head-tail linked list.
 -- Can be cycled. See `shiftLeft` and `shiftRight`.
-data Deque a =
-  Deque [a] [a]
+-- 
+-- The typical `toList` and `fromList` conversions are provided by means of
+-- the `Foldable` and `IsList` instances.
+data Deque a = Deque {-# UNPACK #-} ![a] {-# UNPACK #-} ![a]
 
 -- |
 -- /O(1)/.
--- `toList` is available from the `Foldable` instance.
-fromList :: [a] -> Deque a
-fromList =
-  Deque []
+-- Construct from cons and snoc lists.
+fromConsAndSnocLists :: [a] -> [a] -> Deque a
+fromConsAndSnocLists consList snocList = Deque snocList consList
 
 -- |
 -- /O(n)/.
@@ -161,9 +175,11 @@ last =
   fmap fst . unsnoc
 
 
-deriving instance Eq a => Eq (Deque a)
+instance Eq a => Eq (Deque a) where
+  (==) a b = toList a == toList b
 
-deriving instance Show a => Show (Deque a)
+instance Show a => Show (Deque a) where
+  show = showString "fromList " . show . toList
 
 instance Semigroup (Deque a) where
   (<>) = prepend
@@ -214,3 +230,11 @@ instance MonadPlus Deque where
 
 instance MonadFail Deque where
   fail = const mempty
+
+-- |
+-- /O(1)/.
+instance IsList (Deque a) where
+  type Item (Deque a) = a
+  fromList = Deque []
+  toList (Deque snocList consList) = consList <> List.reverse snocList
+  
