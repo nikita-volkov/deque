@@ -1,3 +1,9 @@
+{-|
+Definitions of lazy Deque.
+
+The typical `toList` and `fromList` conversions are provided by means of
+the `Foldable` and `IsList` instances.
+-}
 module Deque.Lazy
 (
   Deque,
@@ -27,10 +33,6 @@ import qualified Deque.Prelude as Prelude
 
 -- |
 -- Lazy double-ended queue (aka Dequeue or Deque) based on head-tail linked list.
--- Can be cycled. See `shiftLeft` and `shiftRight`.
--- 
--- The typical `toList` and `fromList` conversions are provided by means of
--- the `Foldable` and `IsList` instances.
 data Deque a = Deque {-# UNPACK #-} ![a] {-# UNPACK #-} ![a]
 
 -- |

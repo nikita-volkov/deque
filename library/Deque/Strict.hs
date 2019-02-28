@@ -1,3 +1,9 @@
+{-|
+Definitions of strict Deque.
+
+The typical `toList` and `fromList` conversions are provided by means of
+the `Foldable` and `IsList` instances.
+-}
 module Deque.Strict
 (
   Deque,
@@ -26,10 +32,6 @@ import qualified Deque.StrictList as StrictList
 
 -- |
 -- Strict double-ended queue (aka Dequeue or Deque) based on head-tail linked list.
--- Can be cycled. See `shiftLeft` and `shiftRight`.
--- 
--- The typical `toList` and `fromList` conversions are provided by means of
--- the `Foldable` and `IsList` instances.
 data Deque a = Deque {-# UNPACK #-} !(StrictList.List a) {-# UNPACK #-} !(StrictList.List a)
 
 -- |
