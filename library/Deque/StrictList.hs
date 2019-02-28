@@ -37,6 +37,18 @@ reverseAp = let
     _ -> const bList
   in loop Nil
 
+filterReverse :: (a -> Bool) -> List a -> List a
+filterReverse predicate = let
+  loop !newList = \ case
+    Cons head tail -> if predicate head
+      then loop (Cons head newList) tail
+      else loop newList tail
+    Nil -> newList
+  in loop Nil
+
+filter :: (a -> Bool) -> List a -> List a
+filter predicate = reverse . filterReverse predicate
+
 takeWhile :: (a -> Bool) -> List a -> List a
 takeWhile predicate = \ case
   Cons head tail -> if predicate head

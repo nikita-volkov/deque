@@ -21,13 +21,13 @@ main =
     testImplementation "Strict"
       toList fromList Strict.fromConsAndSnocLists
       Strict.cons Strict.snoc Strict.reverse
-      Strict.shiftLeft Strict.shiftRight Strict.takeWhile Strict.dropWhile
+      Strict.shiftLeft Strict.shiftRight Strict.filter Strict.takeWhile Strict.dropWhile
       Strict.uncons Strict.unsnoc Strict.null Strict.head Strict.last Strict.tail Strict.init
     ,
     testImplementation "Lazy"
       toList fromList Lazy.fromConsAndSnocLists
       Lazy.cons Lazy.snoc Lazy.reverse
-      Lazy.shiftLeft Lazy.shiftRight Lazy.takeWhile Lazy.dropWhile
+      Lazy.shiftLeft Lazy.shiftRight Lazy.filter Lazy.takeWhile Lazy.dropWhile
       Lazy.uncons Lazy.unsnoc Lazy.null Lazy.head Lazy.last Lazy.tail Lazy.init
   ]
 
@@ -37,7 +37,7 @@ Test group, which abstracts over the implementation of deque.
 testImplementation name
   (toList :: forall a. f a -> [a]) fromList fromConsAndSnocLists
   cons snoc reverse
-  shiftLeft shiftRight takeWhile dropWhile
+  shiftLeft shiftRight filter takeWhile dropWhile
   uncons unsnoc null head last tail init =
     testGroup ("Deque implementation: " <> name) $
     [
@@ -69,6 +69,9 @@ testImplementation name
       toList (shiftRight deque) === case list of
         [] -> []
         _ -> List.last list : List.init list
+      ,
+      testProperty "filter" $ forAll ((,) <$> predicateGen <*> dequeAndListGen) $ \ (predicate, (deque, list)) ->
+      toList (filter predicate deque) === List.filter predicate list
       ,
       testProperty "takeWhile" $ forAll ((,) <$> predicateGen <*> dequeAndListGen) $ \ (predicate, (deque, list)) ->
       toList (takeWhile predicate deque) === List.takeWhile predicate list

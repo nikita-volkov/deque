@@ -7,6 +7,7 @@ module Deque.Strict
   reverse,
   shiftLeft,
   shiftRight,
+  filter,
   takeWhile,
   dropWhile,
   uncons,
@@ -20,7 +21,7 @@ module Deque.Strict
 where
 
 import Control.Monad (fail)
-import Deque.Prelude hiding (tail, init, last, head, null, dropWhile, takeWhile, reverse)
+import Deque.Prelude hiding (tail, init, last, head, null, dropWhile, takeWhile, reverse, filter)
 import qualified Deque.StrictList as StrictList
 
 -- |
@@ -73,6 +74,16 @@ shiftLeft deque = maybe deque (uncurry snoc) (uncons deque)
 -- @
 shiftRight :: Deque a -> Deque a
 shiftRight deque = maybe deque (uncurry cons) (unsnoc deque)
+
+-- |
+-- /O(n)/.
+-- Leave only the elements satisfying the predicate.
+filter :: (a -> Bool) -> Deque a -> Deque a
+filter predicate (Deque snocList consList) = let
+  newConsList = StrictList.prependReversed
+    (StrictList.filterReverse predicate consList)
+    (StrictList.filterReverse predicate snocList)
+  in Deque StrictList.Nil newConsList
 
 -- |
 -- /O(n)/.
