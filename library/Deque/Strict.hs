@@ -35,7 +35,7 @@ import qualified Deque.StrictList as StrictList
 data Deque a = Deque {-# UNPACK #-} !(StrictList.List a) {-# UNPACK #-} !(StrictList.List a)
 
 -- |
--- /O(1)/.
+-- /O(n)/.
 -- Construct from cons and snoc lists.
 fromConsAndSnocLists :: [a] -> [a] -> Deque a
 fromConsAndSnocLists consList snocList = Deque (fromList snocList) (fromList consList)
