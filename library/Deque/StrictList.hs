@@ -4,7 +4,7 @@ import Deque.Prelude hiding (takeWhile, dropWhile, reverse)
 
 
 data List a = Cons !a !(List a) | Nil deriving
-  (Eq, Ord, Show, Read, Functor, Foldable, Traversable, Generic, Generic1, Data, Typeable)
+  (Eq, Ord, Show, Read, Foldable, Traversable, Generic, Generic1, Data, Typeable)
 
 instance IsList (List a) where
   type Item (List a) = a
@@ -20,16 +20,26 @@ instance Monoid (List a) where
   mempty = Nil
   mappend = (<>)
 
+instance Functor List where
+  fmap f = reverse . mapReverse f
+
 instance Applicative List where
   pure a = Cons a Nil
-  (<*>) fList aList = reverse (reverseAp fList aList)
+  (<*>) fList aList = reverse (apReverse fList aList)
 
 instance Alternative List where
   empty = mempty
   (<|>) = mappend
 
-reverseAp :: List (a -> b) -> List a -> List b
-reverseAp = let
+mapReverse :: (a -> b) -> List a -> List b
+mapReverse f = let
+  loop !newList = \ case
+    Cons head tail -> loop (Cons (f head) newList) tail
+    _ -> newList
+  in loop Nil
+
+apReverse :: List (a -> b) -> List a -> List b
+apReverse = let
   loop bList = \ case
     Cons f fTail -> \ case
       Cons a aTail -> loop (Cons (f a) bList) fTail aTail
