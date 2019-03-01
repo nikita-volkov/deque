@@ -11,6 +11,12 @@ import qualified Deque.Prelude as Prelude
 
 
 -- |
+-- /O(n)/.
+-- Modify each element of the queue.
+map :: MonadState (Deque a) m => (a -> a) -> m ()
+map f = modify (fmap f)
+
+-- |
 -- /O(1)/.
 -- Add element in the beginning.
 cons :: MonadState (Deque a) m => a -> m ()
