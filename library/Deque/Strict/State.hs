@@ -19,14 +19,14 @@ map f = modify (fmap f)
 
 {-|
 /O(n)/.
-Add elements from the begginning.
+Add elements to the begginning.
 -}
 prepend :: MonadState (Deque a) m => Deque a -> m ()
 prepend deque = modify (deque <>)
 
 {-|
 /O(n)/.
-Add elements from the ending.
+Add elements to the ending.
 -}
 append :: MonadState (Deque a) m => Deque a -> m ()
 append deque = modify (<> deque)
