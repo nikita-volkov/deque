@@ -28,7 +28,7 @@ where
 
 import Control.Monad (fail)
 import Deque.Prelude hiding (tail, init, last, head, null, dropWhile, takeWhile, reverse, filter)
-import qualified Deque.StrictList as StrictList
+import qualified StrictList
 
 -- |
 -- Strict double-ended queue (aka Dequeue or Deque) based on head-tail linked list.
@@ -86,8 +86,8 @@ shiftRight deque = maybe deque (uncurry cons) (unsnoc deque)
 filter :: (a -> Bool) -> Deque a -> Deque a
 filter predicate (Deque snocList consList) = let
   newConsList = StrictList.prependReversed
-    (StrictList.filterReverse predicate consList)
-    (StrictList.filterReverse predicate snocList)
+    (StrictList.filterReversed predicate consList)
+    (StrictList.filterReversed predicate snocList)
   in Deque StrictList.Nil newConsList
 
 -- |
@@ -164,7 +164,7 @@ last (Deque snocList consList) = case snocList of
 -- In case of empty deque returns an empty deque.
 tail :: Deque a -> Deque a
 tail (Deque snocList consList) = case consList of
-  StrictList.Nil -> Deque StrictList.Nil (StrictList.reverseInit snocList)
+  StrictList.Nil -> Deque StrictList.Nil (StrictList.initReversed snocList)
   _ -> Deque snocList (StrictList.tail consList)
 
 -- |
@@ -174,7 +174,7 @@ tail (Deque snocList consList) = case consList of
 -- In case of empty deque returns an empty deque.
 init :: Deque a -> Deque a
 init (Deque snocList consList) = case snocList of
-  StrictList.Nil -> Deque (StrictList.reverseInit consList) StrictList.Nil
+  StrictList.Nil -> Deque (StrictList.initReversed consList) StrictList.Nil
   _ -> Deque (StrictList.tail snocList) consList
 
 
@@ -186,8 +186,8 @@ instance Show a => Show (Deque a) where
 
 instance IsList (Deque a) where
   type Item (Deque a) = a
-  fromList list = Deque (StrictList.fromReverseList list) StrictList.Nil
-  toList (Deque snocList consList) = foldr (:) (StrictList.toReverseList snocList) consList
+  fromList list = Deque (StrictList.fromListReversed list) StrictList.Nil
+  toList (Deque snocList consList) = foldr (:) (toList (StrictList.reverse snocList)) consList
 
 instance Semigroup (Deque a) where
   (<>) (Deque snocList1 consList1) (Deque snocList2 consList2) = let

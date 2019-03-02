@@ -29,10 +29,10 @@ library
     Deque.Strict.State
   other-modules:
     Deque.Prelude
-    Deque.StrictList
   build-depends:
     base >=4.9 && <5,
-    mtl >=2.2 && <3
+    mtl >=2.2 && <3,
+    strict-list >=0.1 && <0.2
 
 test-suite test
   type: exitcode-stdio-1.0
