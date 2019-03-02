@@ -18,6 +18,20 @@ map :: MonadState (Deque a) m => (a -> a) -> m ()
 map f = modify (fmap f)
 
 {-|
+/O(n)/.
+Add elements from the begginning.
+-}
+prepend :: MonadState (Deque a) m => Deque a -> m ()
+prepend deque = modify (deque <>)
+
+{-|
+/O(n)/.
+Add elements from the ending.
+-}
+append :: MonadState (Deque a) m => Deque a -> m ()
+append deque = modify (<> deque)
+
+{-|
 /O(1)/.
 Add element in the beginning.
 -}
