@@ -133,7 +133,7 @@ prepend (Deque snocList1 consList1) (Deque snocList2 consList2) = Deque snocList
 
 -- |
 -- /O(1)/.
--- Revert the deque.
+-- Reverse the deque.
 reverse :: Deque a -> Deque a
 reverse (Deque snocList consList) = Deque consList snocList
 

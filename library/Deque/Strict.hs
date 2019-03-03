@@ -54,7 +54,7 @@ snoc a (Deque snocList consList) = Deque (StrictList.Cons a snocList) consList
 
 -- |
 -- /O(1)/.
--- Revert the deque.
+-- Reverse the deque.
 reverse :: Deque a -> Deque a
 reverse (Deque snocList consList) = Deque consList snocList
 

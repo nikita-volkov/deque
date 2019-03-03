@@ -47,7 +47,7 @@ snoc a = modify (Deque.snoc a)
 
 {-|
 /O(1)/.
-Revert the deque.
+Reverse the deque.
 -}
 reverse :: MonadState (Deque a) m => m ()
 reverse = modify Deque.reverse
