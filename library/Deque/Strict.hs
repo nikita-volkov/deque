@@ -202,8 +202,8 @@ instance Monoid (Deque a) where
 deriving instance Functor Deque
 
 instance Foldable Deque where
-  foldr step init (Deque snocList consList) = foldr step (foldr step init consList) (StrictList.reverse snocList)
-  foldl' step init (Deque snocList consList) = foldl' step (foldl' step init consList) (StrictList.reverse consList)
+  foldr step init (Deque snocList consList) = foldr step (foldr step init (StrictList.reverse snocList)) consList
+  foldl' step init (Deque snocList consList) = foldl' step (foldl' step init consList) (StrictList.reverse snocList)
 
 instance Traversable Deque where
   traverse f (Deque ss cs) =
