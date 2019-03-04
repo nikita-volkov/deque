@@ -112,6 +112,12 @@ testImplementation name
       ,
       testProperty "ap" $ forAll ((,) <$> dequeAndListGen <*> dequeAndListGen) $ \ ((deque1, list1), (deque2, list2)) ->
       toList ((,) <$> deque1 <*> deque2) === ((,) <$> list1 <*> list2)
+      ,
+      testProperty "foldl'" $ forAll dequeAndListGen $ \ (deque, list) ->
+      foldl' (flip (:)) [] deque === foldl' (flip (:)) [] list
+      ,
+      testProperty "foldr" $ forAll dequeAndListGen $ \ (deque, list) ->
+      foldr (:) [] deque === foldr (:) [] list
     ]
     where
       listGen = arbitrary @[Word8]
