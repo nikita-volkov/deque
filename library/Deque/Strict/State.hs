@@ -136,17 +136,13 @@ last = gets Deque.last
 {-|
 /O(1)/, occasionally /O(n)/.
 Keep all elements but the first one.
-
-In case of empty deque returns an empty deque.
 -}
-tail :: MonadState (Deque a) m => m (Deque a)
-tail = gets Deque.tail
+tail :: MonadState (Deque a) m => m ()
+tail = modify Deque.tail
 
 {-|
 /O(1)/, occasionally /O(n)/.
 Keep all elements but the last one.
-
-In case of empty deque returns an empty deque.
 -}
-init :: MonadState (Deque a) m => m (Deque a)
-init = gets Deque.init
+init :: MonadState (Deque a) m => m ()
+init = modify Deque.init
