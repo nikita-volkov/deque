@@ -1,6 +1,6 @@
 module Main where
 
-import Prelude hiding (toList)
+import Prelude hiding (toList, choose)
 import GHC.Exts as Exports (IsList(..))
 import Test.QuickCheck.Instances
 import Test.Tasty
@@ -152,6 +152,14 @@ testImplementation name
         consList <- listGen
         snocList <- listGen
         return (fromConsAndSnocLists consList snocList, consList <> List.reverse snocList)
+      kleisliGen :: Gen (Word8 -> [Word8])
+      kleisliGen = do
+        list <- listGen
+        return $ \ x -> fmap (+ x) list
+
+sizedListGen maxSize = do
+  length <- choose (0, maxSize)
+  replicateM length (arbitrary @Word8)
 
 listGen = arbitrary @[Word8]
 
@@ -165,9 +173,13 @@ strictAndLazyDequeGen = do
   snocList <- listGen
   return (Strict.fromConsAndSnocLists consList snocList, Lazy.fromConsAndSnocLists consList snocList)
 
-{-|
-A workaround to satisfy QuickCheck's requirements,
-when we need to generate a predicate.
--}
+
+-- * Workarounds to satisfy QuickCheck's requirements,
+-- when we need to generate a predicate.
+-------------------------
+
 instance Show (Word8 -> Bool) where
   show _ = "(Word8 -> Bool) function"
+
+instance Show (Word8 -> [Word8]) where
+  show _ = "(Word8 -> [Word8]) function"
