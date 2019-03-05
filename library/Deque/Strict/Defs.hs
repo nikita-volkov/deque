@@ -19,25 +19,25 @@ data Deque a = Deque {-# UNPACK #-} !(StrictList.List a) {-# UNPACK #-} !(Strict
 -- /O(n)/.
 -- Construct from cons and snoc lists.
 fromConsAndSnocLists :: [a] -> [a] -> Deque a
-fromConsAndSnocLists consList snocList = Deque (fromList snocList) (fromList consList)
+fromConsAndSnocLists consList snocList = Deque (fromList consList) (fromList snocList)
 
 -- |
 -- /O(1)/.
 -- Add element in the beginning.
 cons :: a -> Deque a -> Deque a
-cons a (Deque snocList consList) = Deque snocList (StrictList.Cons a consList)
+cons a (Deque consList snocList) = Deque (StrictList.Cons a consList) snocList
 
 -- |
 -- /O(1)/.
 -- Add element in the ending.
 snoc :: a -> Deque a -> Deque a
-snoc a (Deque snocList consList) = Deque (StrictList.Cons a snocList) consList
+snoc a (Deque consList snocList) = Deque consList (StrictList.Cons a snocList)
 
 -- |
 -- /O(1)/.
 -- Reverse the deque.
 reverse :: Deque a -> Deque a
-reverse (Deque snocList consList) = Deque consList snocList
+reverse (Deque consList snocList) = Deque snocList consList
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
@@ -65,17 +65,17 @@ shiftRight deque = maybe deque (uncurry cons) (unsnoc deque)
 -- /O(n)/.
 -- Leave only the elements satisfying the predicate.
 filter :: (a -> Bool) -> Deque a -> Deque a
-filter predicate (Deque snocList consList) = let
+filter predicate (Deque consList snocList) = let
   newConsList = StrictList.prependReversed
     (StrictList.filterReversed predicate consList)
     (StrictList.filterReversed predicate snocList)
-  in Deque StrictList.Nil newConsList
+  in Deque newConsList StrictList.Nil
 
 -- |
 -- /O(n)/.
 -- Leave only the specified amount of first elements.
 take :: Int -> Deque a -> Deque a
-take amount (Deque snocList consList) = let
+take amount (Deque consList snocList) = let
   newSnocList = let
     buildFromConsList size !list = if size < amount
       then \ case
@@ -88,49 +88,49 @@ take amount (Deque snocList consList) = let
         _ -> list
       else const list
     in buildFromConsList 0 StrictList.Nil consList
-  in Deque newSnocList StrictList.Nil
+  in Deque StrictList.Nil newSnocList
 
 -- |
 -- /O(n)/.
 -- Leave only the first elements satisfying the predicate.
 takeWhile :: (a -> Bool) -> Deque a -> Deque a
-takeWhile predicate (Deque snocList consList) = let
+takeWhile predicate (Deque consList snocList) = let
   newConsList = foldr
     (\ a nextState -> if predicate a
       then StrictList.Cons a nextState
       else StrictList.Nil)
     (StrictList.takeWhileFromEnding predicate snocList)
     consList
-  in Deque StrictList.Nil newConsList
+  in Deque newConsList StrictList.Nil
 
 -- |
 -- /O(n)/.
 -- Drop the first elements satisfying the predicate.
 dropWhile :: (a -> Bool) -> Deque a -> Deque a
-dropWhile predicate (Deque snocList consList) = let
+dropWhile predicate (Deque consList snocList) = let
   newConsList = StrictList.dropWhile predicate consList
   in case newConsList of
-    StrictList.Nil -> Deque StrictList.Nil (StrictList.dropWhileFromEnding predicate snocList)
-    _ -> Deque snocList newConsList
+    StrictList.Nil -> Deque (StrictList.dropWhileFromEnding predicate snocList) StrictList.Nil
+    _ -> Deque newConsList snocList
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
 -- Get the first element and deque without it if it's not empty.
 uncons :: Deque a -> Maybe (a, Deque a)
-uncons (Deque snocList consList) = case consList of
-  StrictList.Cons head tail -> Just (head, Deque snocList tail)
+uncons (Deque consList snocList) = case consList of
+  StrictList.Cons head tail -> Just (head, Deque tail snocList)
   _ -> case StrictList.reverse snocList of
-    StrictList.Cons head tail -> Just (head, Deque StrictList.Nil tail)
+    StrictList.Cons head tail -> Just (head, Deque tail StrictList.Nil)
     _ -> Nothing
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
 -- Get the last element and deque without it if it's not empty.
 unsnoc :: Deque a -> Maybe (a, Deque a)
-unsnoc (Deque snocList consList) = case snocList of
-  StrictList.Cons head tail -> Just (head, Deque tail consList)
+unsnoc (Deque consList snocList) = case snocList of
+  StrictList.Cons head tail -> Just (head, Deque consList tail)
   _ -> case StrictList.reverse consList of
-    StrictList.Cons head tail -> Just (head, Deque tail StrictList.Nil)
+    StrictList.Cons head tail -> Just (head, Deque StrictList.Nil tail)
     _ -> Nothing
 
 -- |
@@ -145,7 +145,7 @@ null = \ case
 -- /O(1)/, occasionally /O(n)/.
 -- Get the first element if deque is not empty.
 head :: Deque a -> Maybe a
-head (Deque snocList consList) = case consList of
+head (Deque consList snocList) = case consList of
   StrictList.Cons head _ -> Just head
   _ -> StrictList.last snocList
 
@@ -153,7 +153,7 @@ head (Deque snocList consList) = case consList of
 -- /O(1)/, occasionally /O(n)/.
 -- Get the last element if deque is not empty.
 last :: Deque a -> Maybe a
-last (Deque snocList consList) = case snocList of
+last (Deque consList snocList) = case snocList of
   StrictList.Cons head _ -> Just head
   _ -> StrictList.last consList
 
@@ -163,9 +163,9 @@ last (Deque snocList consList) = case snocList of
 -- 
 -- In case of empty deque returns an empty deque.
 tail :: Deque a -> Deque a
-tail (Deque snocList consList) = case consList of
-  StrictList.Nil -> Deque StrictList.Nil (StrictList.initReversed snocList)
-  _ -> Deque snocList (StrictList.tail consList)
+tail (Deque consList snocList) = case consList of
+  StrictList.Nil -> Deque (StrictList.initReversed snocList) StrictList.Nil
+  _ -> Deque (StrictList.tail consList) snocList
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
@@ -173,9 +173,9 @@ tail (Deque snocList consList) = case consList of
 -- 
 -- In case of empty deque returns an empty deque.
 init :: Deque a -> Deque a
-init (Deque snocList consList) = case snocList of
-  StrictList.Nil -> Deque (StrictList.initReversed consList) StrictList.Nil
-  _ -> Deque (StrictList.tail snocList) consList
+init (Deque consList snocList) = case snocList of
+  StrictList.Nil -> Deque StrictList.Nil (StrictList.initReversed consList)
+  _ -> Deque consList (StrictList.tail snocList)
 
 
 instance Eq a => Eq (Deque a) where
@@ -186,14 +186,14 @@ instance Show a => Show (Deque a) where
 
 instance IsList (Deque a) where
   type Item (Deque a) = a
-  fromList list = Deque (StrictList.fromListReversed list) StrictList.Nil
-  toList (Deque snocList consList) = foldr (:) (toList (StrictList.reverse snocList)) consList
+  fromList list = Deque StrictList.Nil (StrictList.fromListReversed list)
+  toList (Deque consList snocList) = foldr (:) (toList (StrictList.reverse snocList)) consList
 
 instance Semigroup (Deque a) where
   (<>) (Deque snocList1 consList1) (Deque snocList2 consList2) = let
-    snocList3 = snocList2
     consList3 = consList1 <> StrictList.prependReversed snocList1 consList2
-    in Deque snocList3 consList3
+    snocList3 = snocList2
+    in Deque consList3 snocList3
 
 instance Monoid (Deque a) where
   mempty = Deque StrictList.Nil StrictList.Nil
@@ -202,15 +202,15 @@ instance Monoid (Deque a) where
 deriving instance Functor Deque
 
 instance Foldable Deque where
-  foldr step init (Deque snocList consList) = foldr step (foldr step init (StrictList.reverse snocList)) consList
-  foldl' step init (Deque snocList consList) = foldl' step (foldl' step init consList) (StrictList.reverse snocList)
+  foldr step init (Deque consList snocList) = foldr step (foldr step init (StrictList.reverse snocList)) consList
+  foldl' step init (Deque consList snocList) = foldl' step (foldl' step init consList) (StrictList.reverse snocList)
 
 instance Traversable Deque where
-  traverse f (Deque ss cs) =
-    (\cs' ss' -> Deque (StrictList.reverse ss') cs') <$> traverse f cs <*> traverse f (StrictList.reverse ss)
+  traverse f (Deque cs ss) =
+    (\cs' ss' -> Deque cs' (StrictList.reverse ss')) <$> traverse f cs <*> traverse f (StrictList.reverse ss)
 
 instance Applicative Deque where
-  pure a = Deque StrictList.Nil (pure a)
+  pure a = Deque (pure a) StrictList.Nil
   fs <*> as = fromList (toList fs <*> toList as)
 
 instance Monad Deque where

@@ -35,8 +35,8 @@ import qualified Deque.Strict.Defs as StrictDefs
 
 {-| Convert strict deque to lazy deque. -}
 fromStrict :: StrictDefs.Deque a -> LazyDefs.Deque a
-fromStrict (StrictDefs.Deque snocList consList) = LazyDefs.Deque (toList snocList) (toList consList)
+fromStrict (StrictDefs.Deque consList snocList) = LazyDefs.Deque (toList consList) (toList snocList)
 
 {-| Convert lazy deque to strict deque. -}
 toStrict :: LazyDefs.Deque a -> StrictDefs.Deque a
-toStrict (LazyDefs.Deque snocList consList) = StrictDefs.Deque (fromList snocList) (fromList consList)
+toStrict (LazyDefs.Deque consList snocList) = StrictDefs.Deque (fromList consList) (fromList snocList)
