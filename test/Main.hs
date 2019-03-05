@@ -142,6 +142,10 @@ testImplementation name
       ,
       testProperty "foldr" $ forAll dequeAndListGen $ \ (deque, list) ->
       foldr (:) [] deque === foldr (:) [] list
+      ,
+      testProperty "traverse" $ forAll dequeAndListGen $ \ (deque, list) -> let
+        fn x = if mod x 2 == 0 then Right x else Left x
+        in fmap toList (traverse fn deque) === traverse fn list
     ]
     where
       dequeAndListGen = do
