@@ -14,6 +14,7 @@ module Deque.Lazy
   shiftLeft,
   shiftRight,
   filter,
+  take,
   takeWhile,
   dropWhile,
   uncons,
@@ -27,7 +28,7 @@ module Deque.Lazy
 where
 
 import Control.Monad (fail)
-import Deque.Prelude hiding (tail, init, last, head, null, dropWhile, takeWhile, reverse, filter)
+import Deque.Prelude hiding (tail, init, last, head, null, dropWhile, takeWhile, reverse, filter, take)
 import qualified Data.List as List
 import qualified Deque.Prelude as Prelude
 
@@ -46,6 +47,25 @@ fromConsAndSnocLists consList snocList = Deque snocList consList
 -- Leave only the elements satisfying the predicate.
 filter :: (a -> Bool) -> Deque a -> Deque a
 filter predicate (Deque snocList consList) = Deque (List.filter predicate snocList) (List.filter predicate consList)
+
+-- |
+-- /O(n)/.
+-- Leave only the specified amount of first elements.
+take :: Int -> Deque a -> Deque a
+take amount (Deque snocList consList) = let
+  newConsList = let
+    buildFromConsList amount = if amount > 0
+      then \ case
+        head : tail -> head : buildFromConsList (pred amount) tail
+        _ -> buildFromSnocList amount (List.reverse snocList)
+      else const []
+    buildFromSnocList amount = if amount > 0
+      then \ case
+        head : tail -> head : buildFromSnocList (pred amount) tail
+        _ -> []
+      else const []
+    in buildFromConsList amount consList
+  in Deque [] newConsList
 
 -- |
 -- /O(n)/.

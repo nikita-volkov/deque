@@ -14,6 +14,7 @@ module Deque.Strict
   shiftLeft,
   shiftRight,
   filter,
+  take,
   takeWhile,
   dropWhile,
   uncons,
@@ -27,7 +28,7 @@ module Deque.Strict
 where
 
 import Control.Monad (fail)
-import Deque.Prelude hiding (tail, init, last, head, null, dropWhile, takeWhile, reverse, filter)
+import Deque.Prelude hiding (tail, init, last, head, null, dropWhile, takeWhile, reverse, filter, take)
 import qualified StrictList
 
 -- |
@@ -89,6 +90,25 @@ filter predicate (Deque snocList consList) = let
     (StrictList.filterReversed predicate consList)
     (StrictList.filterReversed predicate snocList)
   in Deque StrictList.Nil newConsList
+
+-- |
+-- /O(n)/.
+-- Leave only the specified amount of first elements.
+take :: Int -> Deque a -> Deque a
+take amount (Deque snocList consList) = let
+  newSnocList = let
+    buildFromConsList size !list = if size < amount
+      then \ case
+        StrictList.Cons head tail -> buildFromConsList (succ size) (StrictList.Cons head list) tail
+        _ -> buildFromSnocList size list (StrictList.reverse snocList)
+      else const list
+    buildFromSnocList size !list = if size < amount
+      then \ case
+        StrictList.Cons head tail -> buildFromSnocList (succ size) (StrictList.Cons head list) tail
+        _ -> list
+      else const list
+    in buildFromConsList 0 StrictList.Nil consList
+  in Deque newSnocList StrictList.Nil
 
 -- |
 -- /O(n)/.
