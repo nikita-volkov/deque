@@ -24,8 +24,10 @@ library
   default-language: Haskell2010
   exposed-modules:
     Deque.Lazy
+    Deque.Lazy.Reader
     Deque.Lazy.State
     Deque.Strict
+    Deque.Strict.Reader
     Deque.Strict.State
   other-modules:
     Deque.Lazy.Defs
