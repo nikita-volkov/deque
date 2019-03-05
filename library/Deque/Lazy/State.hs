@@ -103,7 +103,8 @@ dropWhile predicate = modify (Deque.dropWhile predicate)
 
 {-|
 /O(1)/, occasionally /O(n)/.
-Get the first element and deque without it if it's not empty.
+Get the first element if deque is not empty,
+removing the element.
 -}
 uncons :: MonadState (Deque a) m => m (Maybe a)
 uncons = state (\ deque -> case Deque.uncons deque of
@@ -112,7 +113,8 @@ uncons = state (\ deque -> case Deque.uncons deque of
 
 {-|
 /O(1)/, occasionally /O(n)/.
-Get the last element and deque without it if it's not empty.
+Get the last element if deque is not empty,
+removing the element.
 -}
 unsnoc :: MonadState (Deque a) m => m (Maybe a)
 unsnoc = state (\ deque -> case Deque.unsnoc deque of
