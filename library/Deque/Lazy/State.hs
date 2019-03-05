@@ -75,6 +75,13 @@ filter predicate = modify (Deque.filter predicate)
 
 {-|
 /O(n)/.
+Leave only the specified amount of first elements.
+-}
+take :: MonadState (Deque a) m => Int -> m ()
+take = modify . Deque.take
+
+{-|
+/O(n)/.
 Leave only the first elements satisfying the predicate.
 -}
 takeWhile :: MonadState (Deque a) m => (a -> Bool) -> m ()
