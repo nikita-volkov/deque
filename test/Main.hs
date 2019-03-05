@@ -140,8 +140,11 @@ testImplementation name
       testProperty "<>" $ forAll ((,) <$> dequeAndListGen <*> dequeAndListGen) $ \ ((deque1, list1), (deque2, list2)) ->
       toList (deque1 <> deque2) === (list1 <> list2)
       ,
-      testProperty "ap" $ forAll ((,) <$> dequeAndListGen <*> dequeAndListGen) $ \ ((deque1, list1), (deque2, list2)) ->
+      testProperty "<*>" $ forAll ((,) <$> dequeAndListGen <*> dequeAndListGen) $ \ ((deque1, list1), (deque2, list2)) ->
       toList ((,) <$> deque1 <*> deque2) === ((,) <$> list1 <*> list2)
+      ,
+      testProperty ">>=" $ forAll ((,) <$> dequeAndListKleisliGen <*> dequeAndListGen) $ \ ((dequeK, listK), (deque, list)) ->
+      toList (deque >>= dequeK) === (list >>= listK)
       ,
       testProperty "foldl'" $ forAll dequeAndListGen $ \ (deque, list) ->
       foldl' (flip (:)) [] deque === foldl' (flip (:)) [] list
@@ -158,10 +161,12 @@ testImplementation name
         consList <- listGen
         snocList <- listGen
         return (fromConsAndSnocLists consList snocList, consList <> List.reverse snocList)
-      kleisliGen :: Gen (Word8 -> [Word8])
-      kleisliGen = do
+      dequeAndListKleisliGen = do
         list <- listGen
-        return $ \ x -> fmap (+ x) list
+        let
+          listK x = fmap (+ x) list
+          dequeK = fromList . listK
+          in return (dequeK, listK)
 
 sizedListGen maxSize = do
   length <- choose (0, maxSize)
@@ -185,7 +190,13 @@ strictAndLazyDequeGen = do
 -------------------------
 
 instance Show (Word8 -> Bool) where
-  show _ = "(Word8 -> Bool) function"
+  show _ = "@(Word8 -> Bool)"
 
 instance Show (Word8 -> [Word8]) where
-  show _ = "(Word8 -> [Word8]) function"
+  show _ = "@(Word8 -> [Word8])"
+
+instance Show (Word8 -> Strict.Deque Word8) where
+  show _ = "@(Word8 -> Deque Word8)"
+
+instance Show (Word8 -> Lazy.Deque Word8) where
+  show _ = "@(Word8 -> Deque Word8)"

@@ -228,11 +228,22 @@ instance Traversable Deque where
 
 instance Applicative Deque where
   pure a = Deque (pure a) StrictList.Nil
-  fs <*> as = fromList (toList fs <*> toList as)
+  (<*>) (Deque fnConsList fnSnocList) (Deque argConsList argSnocList) = let
+    snocList = let
+      fnStep resultSnocList fn = let
+        argStep resultSnocList arg = StrictList.Cons (fn arg) resultSnocList
+        in foldl' argStep (foldl' argStep resultSnocList argConsList) (StrictList.reverse argSnocList)
+      in foldl' fnStep (foldl' fnStep StrictList.Nil fnConsList) (StrictList.reverse fnSnocList)
+    in Deque StrictList.Nil snocList
 
 instance Monad Deque where
   return = pure
-  m >>= f = fromList (toList m >>= toList . f)
+  (>>=) (Deque aConsList aSnocList) k = let
+    snocList = let
+      aStep accBSnocList a = case k a of
+        Deque bConsList bSnocList -> StrictList.prependReversed bConsList (bSnocList <> accBSnocList)
+      in foldl' aStep (foldl' aStep StrictList.Nil aConsList) (StrictList.reverse aSnocList)
+    in Deque StrictList.Nil snocList
   fail = const mempty
 
 instance Alternative Deque where

@@ -217,11 +217,22 @@ deriving instance Functor Deque
 
 instance Applicative Deque where
   pure a = Deque [] [a]
-  fs <*> as = fromList (toList fs <*> toList as)
+  (<*>) (Deque fnConsList fnSnocList) (Deque argConsList argSnocList) = let
+    consList = let
+      fnStep fn resultConsList = let
+        argStep arg = (:) (fn arg)
+        in foldr argStep (foldr argStep resultConsList (List.reverse argSnocList)) argConsList
+      in foldr fnStep (foldr fnStep [] (List.reverse fnSnocList)) fnConsList 
+    in Deque consList []
 
 instance Monad Deque where
   return = pure
-  m >>= f = fromList (toList m >>= toList . f)
+  (>>=) (Deque aConsList aSnocList) k = let
+    consList = let
+      aStep a accBConsList = case k a of
+        Deque bConsList bSnocList -> bConsList <> List.reverse bSnocList <> accBConsList
+      in foldr aStep (foldr aStep [] (List.reverse aSnocList)) aConsList
+    in Deque consList []
   fail = const mempty
 
 instance Alternative Deque where
