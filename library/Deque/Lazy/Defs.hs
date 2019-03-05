@@ -14,7 +14,7 @@ import qualified Deque.Prelude as Prelude
 
 -- |
 -- Lazy double-ended queue (aka Dequeue or Deque) based on head-tail linked list.
-data Deque a = Deque {-# UNPACK #-} ![a] {-# UNPACK #-} ![a]
+data Deque a = Deque ![a] ![a]
 
 -- |
 -- /O(1)/.

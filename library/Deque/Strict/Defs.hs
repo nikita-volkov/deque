@@ -13,7 +13,7 @@ import qualified StrictList
 
 -- |
 -- Strict double-ended queue (aka Dequeue or Deque) based on head-tail linked list.
-data Deque a = Deque {-# UNPACK #-} !(StrictList.List a) {-# UNPACK #-} !(StrictList.List a)
+data Deque a = Deque !(StrictList.List a) !(StrictList.List a)
 
 -- |
 -- /O(n)/.
