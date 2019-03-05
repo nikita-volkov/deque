@@ -207,10 +207,10 @@ instance IsList (Deque a) where
   toList (Deque consList snocList) = foldr (:) (toList (StrictList.reverse snocList)) consList
 
 instance Semigroup (Deque a) where
-  (<>) (Deque snocList1 consList1) (Deque snocList2 consList2) = let
-    consList3 = consList1 <> StrictList.prependReversed snocList1 consList2
-    snocList3 = snocList2
-    in Deque consList3 snocList3
+  (<>) (Deque consList1 snocList1) (Deque consList2 snocList2) = let
+    consList = consList1
+    snocList = snocList2 <> StrictList.prependReversed consList2 snocList1
+    in Deque consList snocList
 
 instance Monoid (Deque a) where
   mempty = Deque StrictList.Nil StrictList.Nil

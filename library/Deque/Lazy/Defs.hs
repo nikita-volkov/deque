@@ -144,7 +144,7 @@ unsnoc (Deque consList snocList) = case snocList of
 -- |
 -- /O(n)/.
 prepend :: Deque a -> Deque a -> Deque a
-prepend (Deque snocList1 consList1) (Deque snocList2 consList2) = Deque consList3 snocList3 where
+prepend (Deque consList1 snocList1) (Deque consList2 snocList2) = Deque consList3 snocList3 where
   consList3 = consList1
   snocList3 = snocList2 ++ foldl' (flip (:)) snocList1 consList2
 

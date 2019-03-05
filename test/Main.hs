@@ -137,6 +137,9 @@ testImplementation name
         [] -> []
         _ -> List.init list
       ,
+      testProperty "<>" $ forAll ((,) <$> dequeAndListGen <*> dequeAndListGen) $ \ ((deque1, list1), (deque2, list2)) ->
+      toList (deque1 <> deque2) === (list1 <> list2)
+      ,
       testProperty "ap" $ forAll ((,) <$> dequeAndListGen <*> dequeAndListGen) $ \ ((deque1, list1), (deque2, list2)) ->
       toList ((,) <$> deque1 <*> deque2) === ((,) <$> list1 <*> list2)
       ,
