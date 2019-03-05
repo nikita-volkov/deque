@@ -28,6 +28,8 @@ library
     Deque.Strict
     Deque.Strict.State
   other-modules:
+    Deque.Lazy.Defs
+    Deque.Strict.Defs
     Deque.Prelude
   build-depends:
     base >=4.9 && <5,

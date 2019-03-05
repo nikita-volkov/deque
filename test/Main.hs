@@ -29,6 +29,27 @@ main =
       Lazy.cons Lazy.snoc Lazy.reverse
       Lazy.shiftLeft Lazy.shiftRight Lazy.filter Lazy.take Lazy.takeWhile Lazy.dropWhile
       Lazy.uncons Lazy.unsnoc Lazy.null Lazy.head Lazy.last Lazy.tail Lazy.init
+    ,
+    testGroup "Conversions" $
+    [
+      testGroup "Strict" $
+      [
+        testProperty "toLazy" $ forAll strictAndLazyDequeGen $ \ (strictDeque, lazyDeque) ->
+        Strict.toLazy strictDeque === lazyDeque
+        ,
+        testProperty "fromLazy" $ forAll strictAndLazyDequeGen $ \ (strictDeque, lazyDeque) ->
+        Strict.fromLazy lazyDeque === strictDeque
+      ]
+      ,
+      testGroup "Lazy" $
+      [
+        testProperty "toStrict" $ forAll strictAndLazyDequeGen $ \ (strictDeque, lazyDeque) ->
+        Lazy.toStrict lazyDeque === strictDeque
+        ,
+        testProperty "fromStrict" $ forAll strictAndLazyDequeGen $ \ (strictDeque, lazyDeque) ->
+        Lazy.fromStrict strictDeque === lazyDeque
+      ]
+    ]
   ]
 
 {-|
@@ -123,15 +144,22 @@ testImplementation name
       foldr (:) [] deque === foldr (:) [] list
     ]
     where
-      listGen = arbitrary @[Word8]
       dequeAndListGen = do
         consList <- listGen
         snocList <- listGen
         return (fromConsAndSnocLists consList snocList, consList <> List.reverse snocList)
-      predicateGen = do
-        op <- elements [(>), (>=), (==), (<=), (<)]
-        x <- arbitrary @Word8
-        return (op x)
+
+listGen = arbitrary @[Word8]
+
+predicateGen = do
+  op <- elements [(>), (>=), (==), (<=), (<)]
+  x <- arbitrary @Word8
+  return (op x)
+
+strictAndLazyDequeGen = do
+  consList <- listGen
+  snocList <- listGen
+  return (Strict.fromConsAndSnocLists consList snocList, Lazy.fromConsAndSnocLists consList snocList)
 
 {-|
 A workaround to satisfy QuickCheck's requirements,
