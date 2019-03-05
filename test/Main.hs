@@ -51,7 +51,7 @@ testImplementation name
       deque === fromList list
       ,
       testProperty "show" $ forAll dequeAndListGen $ \ (deque, list) ->
-      show deque === "fromList " <> show list
+      show deque === show list
       ,
       testProperty "cons" $ forAll ((,) <$> arbitrary <*> dequeAndListGen) $ \ (a, (deque, list)) ->
       toList (cons a deque) === a : list

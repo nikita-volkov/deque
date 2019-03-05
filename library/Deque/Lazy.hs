@@ -196,7 +196,7 @@ instance Eq a => Eq (Deque a) where
   (==) a b = toList a == toList b
 
 instance Show a => Show (Deque a) where
-  show = showString "fromList " . show . toList
+  show = show . toList
 
 instance Semigroup (Deque a) where
   (<>) = prepend
