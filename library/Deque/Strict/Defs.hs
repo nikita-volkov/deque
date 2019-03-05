@@ -92,6 +92,23 @@ take amount (Deque consList snocList) = let
 
 -- |
 -- /O(n)/.
+-- Drop the specified amount of first elements.
+drop :: Int -> Deque a -> Deque a
+drop amount (Deque consList snocList) = let
+  buildFromConsList amount = if amount > 0
+    then \ case
+      StrictList.Cons _ tail -> buildFromConsList (pred amount) tail
+      _ -> buildFromSnocList amount (StrictList.reverse snocList)
+    else \ tail -> Deque tail snocList
+  buildFromSnocList amount = if amount > 0
+    then \ case
+      StrictList.Cons _ tail -> buildFromSnocList (pred amount) tail
+      _ -> Deque StrictList.Nil StrictList.Nil
+    else \ tail -> Deque tail StrictList.Nil
+  in buildFromConsList amount consList
+
+-- |
+-- /O(n)/.
 -- Leave only the first elements satisfying the predicate.
 takeWhile :: (a -> Bool) -> Deque a -> Deque a
 takeWhile predicate (Deque consList snocList) = let

@@ -82,6 +82,13 @@ take = modify . Deque.take
 
 {-|
 /O(n)/.
+Drop the specified amount of first elements.
+-}
+drop :: MonadState (Deque a) m => Int -> m ()
+drop = modify . Deque.drop
+
+{-|
+/O(n)/.
 Leave only the first elements satisfying the predicate.
 -}
 takeWhile :: MonadState (Deque a) m => (a -> Bool) -> m ()

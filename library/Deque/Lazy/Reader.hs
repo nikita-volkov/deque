@@ -82,6 +82,13 @@ take = reader . Deque.take
 
 {-|
 /O(n)/.
+Drop the specified amount of first elements.
+-}
+drop :: MonadReader (Deque a) m => Int -> m (Deque a)
+drop = reader . Deque.drop
+
+{-|
+/O(n)/.
 Leave only the first elements satisfying the predicate.
 -}
 takeWhile :: MonadReader (Deque a) m => (a -> Bool) -> m (Deque a)

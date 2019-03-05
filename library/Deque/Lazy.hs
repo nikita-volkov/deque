@@ -17,6 +17,7 @@ module Deque.Lazy
   LazyDefs.shiftRight,
   LazyDefs.filter,
   LazyDefs.take,
+  LazyDefs.drop,
   LazyDefs.takeWhile,
   LazyDefs.dropWhile,
   LazyDefs.uncons,

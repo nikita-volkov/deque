@@ -17,6 +17,7 @@ module Deque.Strict
   StrictDefs.shiftRight,
   StrictDefs.filter,
   StrictDefs.take,
+  StrictDefs.drop,
   StrictDefs.takeWhile,
   StrictDefs.dropWhile,
   StrictDefs.uncons,
