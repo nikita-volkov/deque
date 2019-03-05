@@ -77,17 +77,17 @@ filter predicate (Deque consList snocList) = let
 take :: Int -> Deque a -> Deque a
 take amount (Deque consList snocList) = let
   newSnocList = let
-    buildFromConsList size !list = if size < amount
+    buildFromConsList amount !list = if amount > 0
       then \ case
-        StrictList.Cons head tail -> buildFromConsList (succ size) (StrictList.Cons head list) tail
-        _ -> buildFromSnocList size list (StrictList.reverse snocList)
+        StrictList.Cons head tail -> buildFromConsList (pred amount) (StrictList.Cons head list) tail
+        _ -> buildFromSnocList amount list (StrictList.reverse snocList)
       else const list
-    buildFromSnocList size !list = if size < amount
+    buildFromSnocList amount !list = if amount > 0
       then \ case
-        StrictList.Cons head tail -> buildFromSnocList (succ size) (StrictList.Cons head list) tail
+        StrictList.Cons head tail -> buildFromSnocList (pred amount) (StrictList.Cons head list) tail
         _ -> list
       else const list
-    in buildFromConsList 0 StrictList.Nil consList
+    in buildFromConsList amount StrictList.Nil consList
   in Deque StrictList.Nil newSnocList
 
 -- |
