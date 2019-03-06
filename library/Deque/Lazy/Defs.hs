@@ -230,7 +230,7 @@ instance Monad Deque where
   (>>=) (Deque aConsList aSnocList) k = let
     consList = let
       aStep a accBConsList = case k a of
-        Deque bConsList bSnocList -> bConsList <> List.reverse bSnocList <> accBConsList
+        Deque bConsList bSnocList -> bConsList <> foldl' (flip (:)) accBConsList bSnocList
       in foldr aStep (foldr aStep [] (List.reverse aSnocList)) aConsList
     in Deque consList []
   fail = const mempty
