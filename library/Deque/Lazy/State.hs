@@ -102,6 +102,13 @@ dropWhile :: MonadState (Deque a) m => (a -> Bool) -> m ()
 dropWhile predicate = modify (Deque.dropWhile predicate)
 
 {-|
+/O(n)/.
+Return the first elements satisfying the predicate, removing them from the state.
+-}
+span :: MonadState (Deque a) m => (a -> Bool) -> m (Deque a)
+span predicate = state (Deque.span predicate)
+
+{-|
 /O(1)/, occasionally /O(n)/.
 Get the first element if deque is not empty,
 removing the element.

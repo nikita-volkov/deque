@@ -102,6 +102,13 @@ dropWhile :: MonadReader (Deque a) m => (a -> Bool) -> m (Deque a)
 dropWhile predicate = reader (Deque.dropWhile predicate)
 
 {-|
+/O(n)/.
+Same as @(,) <$> `takeWhile` predicate <*> `dropWhile` predicate@.
+-}
+span :: MonadReader (Deque a) m => (a -> Bool) -> m (Deque a, Deque a)
+span predicate = reader (Deque.span predicate)
+
+{-|
 /O(1)/, occasionally /O(n)/.
 Get the first element and deque without it if it's not empty.
 -}
