@@ -20,6 +20,7 @@ module Deque.Lazy
   LazyDefs.drop,
   LazyDefs.takeWhile,
   LazyDefs.dropWhile,
+  LazyDefs.span,
   LazyDefs.uncons,
   LazyDefs.unsnoc,
   LazyDefs.null,

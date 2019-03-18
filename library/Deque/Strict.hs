@@ -20,6 +20,7 @@ module Deque.Strict
   StrictDefs.drop,
   StrictDefs.takeWhile,
   StrictDefs.dropWhile,
+  StrictDefs.span,
   StrictDefs.uncons,
   StrictDefs.unsnoc,
   StrictDefs.null,

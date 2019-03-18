@@ -10,6 +10,7 @@ where
 import Control.Monad (fail)
 import Deque.Prelude hiding (tail, init, last, head, null, dropWhile, takeWhile, reverse, filter, take)
 import qualified StrictList
+import qualified Deque.Prelude as Prelude
 
 -- |
 -- Strict double-ended queue (aka Dequeue or Deque) based on head-tail linked list.
@@ -129,6 +130,22 @@ dropWhile predicate (Deque consList snocList) = let
   in case newConsList of
     StrictList.Nil -> Deque (StrictList.dropWhileFromEnding predicate snocList) StrictList.Nil
     _ -> Deque newConsList snocList
+
+-- |
+-- /O(n)/.
+-- Same as @(`takeWhile` predicate, `dropWhile` predicate)@.
+span :: (a -> Bool) -> Deque a -> (Deque a, Deque a)
+span predicate (Deque consList snocList) = case StrictList.spanReversed predicate consList of
+  (consReversedPrefix, consSuffix) -> if Prelude.null consSuffix
+    then case StrictList.spanFromEnding predicate snocList of
+      (snocPrefix, snocSuffix) -> let
+        prefix = Deque (StrictList.prependReversed consReversedPrefix snocPrefix) StrictList.Nil
+        suffix = Deque snocSuffix StrictList.Nil
+        in (prefix, suffix)
+    else let
+      prefix = Deque StrictList.Nil consReversedPrefix
+      suffix = Deque consSuffix snocList
+      in (prefix, suffix)
 
 -- |
 -- /O(1)/, occasionally /O(n)/.

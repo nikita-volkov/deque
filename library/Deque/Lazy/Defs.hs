@@ -88,6 +88,22 @@ dropWhile predicate (Deque consList snocList) = let
     _ -> Deque newConsList snocList
 
 -- |
+-- /O(n)/.
+-- Same as @(`takeWhile` predicate, `dropWhile` predicate)@.
+span :: (a -> Bool) -> Deque a -> (Deque a, Deque a)
+span predicate (Deque consList snocList) = case List.span predicate consList of
+  (consPrefix, consSuffix) -> if List.null consSuffix
+    then case List.span predicate (List.reverse snocList) of
+      (snocPrefix, snocSuffix) -> let
+        prefix = Deque (consPrefix <> snocPrefix) []
+        suffix = Deque snocSuffix []
+        in (prefix, suffix)
+    else let
+      prefix = Deque consPrefix []
+      suffix = Deque consSuffix snocList
+      in (prefix, suffix)
+
+-- |
 -- /O(1)/, occasionally /O(n)/.
 -- Move the first element to the end.
 --
