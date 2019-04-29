@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-|
 Definitions of lazy Deque.
 
@@ -249,7 +250,9 @@ instance Monad Deque where
         Deque bConsList bSnocList -> bConsList <> foldl' (flip (:)) accBConsList bSnocList
       in foldr aStep (foldr aStep [] (List.reverse aSnocList)) aConsList
     in Deque consList []
+#if !(MIN_VERSION_base(4,13,0))
   fail = const mempty
+#endif
 
 instance Alternative Deque where
   empty = mempty
