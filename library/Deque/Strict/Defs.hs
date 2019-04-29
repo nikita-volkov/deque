@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-|
 Definitions of strict Deque.
 
@@ -261,7 +262,9 @@ instance Monad Deque where
         Deque bConsList bSnocList -> StrictList.prependReversed bConsList (bSnocList <> accBSnocList)
       in foldl' aStep (foldl' aStep StrictList.Nil aConsList) (StrictList.reverse aSnocList)
     in Deque StrictList.Nil snocList
+#if !(MIN_VERSION_base(4,13,0))
   fail = const mempty
+#endif
 
 instance Alternative Deque where
   empty = mempty
