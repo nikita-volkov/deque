@@ -90,7 +90,7 @@ dropWhile predicate (Deque consList snocList) = let
 
 -- |
 -- /O(n)/.
--- Same as @(`takeWhile` predicate, `dropWhile` predicate)@.
+-- Perform `takeWhile` and `dropWhile` in a single operation.
 span :: (a -> Bool) -> Deque a -> (Deque a, Deque a)
 span predicate (Deque consList snocList) = case List.span predicate consList of
   (consPrefix, consSuffix) -> if List.null consSuffix
