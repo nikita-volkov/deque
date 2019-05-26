@@ -103,7 +103,7 @@ dropWhile predicate = reader (Deque.dropWhile predicate)
 
 {-|
 /O(n)/.
-Same as @(,) <$> `takeWhile` predicate <*> `dropWhile` predicate@.
+Same as @(,) '<$>' `takeWhile` predicate '<*>' `dropWhile` predicate@.
 -}
 span :: MonadReader (Deque a) m => (a -> Bool) -> m (Deque a, Deque a)
 span predicate = reader (Deque.span predicate)
