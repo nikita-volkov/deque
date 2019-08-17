@@ -44,8 +44,7 @@ test-suite test
   hs-source-dirs: test
   default-extensions: BangPatterns, DeriveDataTypeable, DeriveGeneric, DeriveFunctor, DeriveTraversable, FlexibleContexts, FlexibleInstances, LambdaCase, NoImplicitPrelude, RankNTypes, ScopedTypeVariables, StandaloneDeriving, TypeApplications, TypeFamilies
   default-language: Haskell2010
-  main-is:
-    Main.hs
+  main-is: Main.hs
   build-depends:
     deque,
     QuickCheck >=2.8.1 && <3,
