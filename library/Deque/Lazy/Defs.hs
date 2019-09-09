@@ -271,4 +271,8 @@ instance IsList (Deque a) where
   type Item (Deque a) = a
   fromList = flip Deque []
   toList (Deque consList snocList) = consList <> List.reverse snocList
-  
+
+deriving instance Generic (Deque a)
+deriving instance Generic1 Deque
+
+instance Hashable a => Hashable (Deque a)

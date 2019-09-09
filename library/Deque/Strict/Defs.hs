@@ -276,3 +276,8 @@ instance MonadPlus Deque where
 
 instance MonadFail Deque where
   fail = const mempty
+
+deriving instance Generic (Deque a)
+deriving instance Generic1 Deque
+
+instance Hashable a => Hashable (Deque a)

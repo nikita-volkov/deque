@@ -80,3 +80,6 @@ import Control.Monad.Reader.Class as Exports hiding (fail)
 import Control.Monad.State.Class as Exports hiding (fail)
 import Control.Monad.Writer.Class as Exports hiding (fail)
 
+-- hashable
+-------------------------
+import Data.Hashable as Exports (Hashable)
