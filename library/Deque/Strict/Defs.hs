@@ -199,8 +199,8 @@ last (Deque consList snocList) = case snocList of
 -- In case of empty deque returns an empty deque.
 tail :: Deque a -> Deque a
 tail (Deque consList snocList) = case consList of
-  StrictList.Nil -> Deque (StrictList.initReversed snocList) StrictList.Nil
-  _ -> Deque (StrictList.tail consList) snocList
+  StrictList.Cons _ consListTail -> Deque consListTail snocList
+  _ -> Deque (StrictList.initReversed snocList) StrictList.Nil
 
 -- |
 -- /O(1)/, occasionally /O(n)/.
