@@ -83,3 +83,7 @@ import Control.Monad.Writer.Class as Exports hiding (fail)
 -- hashable
 -------------------------
 import Data.Hashable as Exports (Hashable)
+
+-- deepseq
+-------------------------
+import Control.DeepSeq as Exports

@@ -276,3 +276,6 @@ deriving instance Generic (Deque a)
 deriving instance Generic1 Deque
 
 instance Hashable a => Hashable (Deque a)
+
+instance NFData a => NFData (Deque a)
+instance NFData1 Deque
