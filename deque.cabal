@@ -1,3 +1,4 @@
+cabal-version: 3.0
 name:          deque
 version:       0.4.4
 synopsis:      Double-ended queues
@@ -12,8 +13,6 @@ maintainer:    Nikita Volkov <nikita.y.volkov@mail.ru>
 copyright:     (c) 2016, Nikita Volkov
 license:       MIT
 license-file:  LICENSE
-build-type:    Simple
-cabal-version: >=1.10
 
 source-repository head
   type:     git
@@ -53,11 +52,11 @@ library
     Deque.Strict.Defs
 
   build-depends:
-      base >=4.9 && <5
-    , deepseq >=1.4.3 && <1.5
-    , hashable >=1.2 && <2
-    , mtl >=2.2 && <3
-    , strict-list >=0.1.6 && <0.2
+      base         >=4.9   && <5
+    , deepseq >=1.4.3 && <2
+    , hashable     >=1.2   && <2
+    , mtl          >=2.2   && <3
+    , strict-list  >=0.1.6 && <0.2
 
 test-suite test
   type:               exitcode-stdio-1.0
