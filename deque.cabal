@@ -6,6 +6,7 @@ description:
   Strict and lazy implementations of Double-Ended Queue (aka Dequeue or Deque)
   based on head-tail linked list.
 
+category: Data
 homepage:      https://github.com/nikita-volkov/deque
 bug-reports:   https://github.com/nikita-volkov/deque/issues
 author:        Nikita Volkov <nikita.y.volkov@mail.ru>
