@@ -213,10 +213,10 @@ init = fromMaybe <$> id <*> fmap snd . unsnoc
 last :: Deque a -> Maybe a
 last = fmap fst . unsnoc
 
-instance Eq a => Eq (Deque a) where
+instance (Eq a) => Eq (Deque a) where
   (==) a b = toList a == toList b
 
-instance Show a => Show (Deque a) where
+instance (Show a) => Show (Deque a) where
   show = show . toList
 
 instance Semigroup (Deque a) where
@@ -282,8 +282,8 @@ deriving instance Generic (Deque a)
 
 deriving instance Generic1 Deque
 
-instance Hashable a => Hashable (Deque a)
+instance (Hashable a) => Hashable (Deque a)
 
-instance NFData a => NFData (Deque a)
+instance (NFData a) => NFData (Deque a)
 
 instance NFData1 Deque
