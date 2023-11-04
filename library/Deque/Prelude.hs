@@ -10,15 +10,15 @@ import Control.Concurrent as Exports
 import Control.DeepSeq as Exports
 import Control.Exception as Exports
 import Control.Monad as Exports hiding (fail, forM, forM_, mapM, mapM_, msum, sequence, sequence_)
-import Control.Monad.Cont.Class as Exports hiding (fail)
-import Control.Monad.Error.Class as Exports hiding (Error (..), fail)
+import Control.Monad.Cont.Class as Exports
+import Control.Monad.Error.Class as Exports
 import Control.Monad.Fail as Exports
 import Control.Monad.Fix as Exports hiding (fix)
 import Control.Monad.IO.Class as Exports
-import Control.Monad.Reader.Class as Exports hiding (fail)
+import Control.Monad.Reader.Class as Exports
 import Control.Monad.ST as Exports
-import Control.Monad.State.Class as Exports hiding (fail)
-import Control.Monad.Writer.Class as Exports hiding (fail)
+import Control.Monad.State.Class as Exports
+import Control.Monad.Writer.Class as Exports
 import Data.Bits as Exports
 import Data.Bool as Exports
 import Data.Char as Exports
@@ -30,7 +30,7 @@ import Data.Either as Exports
 import Data.Fixed as Exports
 import Data.Foldable as Exports hiding (toList)
 import Data.Function as Exports hiding (id, (.))
-import Data.Functor as Exports
+import Data.Functor as Exports hiding (unzip)
 import Data.Functor.Identity as Exports
 import Data.Hashable as Exports (Hashable)
 import Data.IORef as Exports
@@ -68,8 +68,6 @@ import System.IO.Unsafe as Exports
 import System.Mem as Exports
 import System.Mem.StableName as Exports
 import System.Timeout as Exports
-import Text.ParserCombinators.ReadP as Exports (ReadP, ReadS, readP_to_S, readS_to_P)
-import Text.ParserCombinators.ReadPrec as Exports (ReadPrec, readP_to_Prec, readPrec_to_P, readPrec_to_S, readS_to_Prec)
 import Text.Printf as Exports (hPrintf, printf)
 import Text.Read as Exports (Read (..), readEither, readMaybe)
 import Unsafe.Coerce as Exports

@@ -1,16 +1,13 @@
+{-# OPTIONS_GHC -Wno-orphans -Wno-missing-signatures #-}
+
 module Main where
 
 import qualified Data.List as List
 import qualified Deque.Lazy as Lazy
 import qualified Deque.Strict as Strict
 import GHC.Exts as Exports (IsList (..))
-import qualified Test.QuickCheck as QuickCheck
-import Test.QuickCheck.Instances
-import qualified Test.QuickCheck.Property as QuickCheck
 import Test.Tasty
-import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck
-import Test.Tasty.Runners
 import Prelude hiding (choose, toList)
 
 main =
@@ -201,8 +198,7 @@ strictAndLazyDequeGen = do
   snocList <- listGen
   return (Strict.fromConsAndSnocLists consList snocList, Lazy.fromConsAndSnocLists consList snocList)
 
--- * Workarounds to satisfy QuickCheck's requirements,
-
+-- Workarounds to satisfy QuickCheck's requirements,
 -- when we need to generate a predicate.
 -------------------------
 

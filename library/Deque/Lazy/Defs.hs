@@ -7,10 +7,8 @@
 -- the `Foldable` and `IsList` instances.
 module Deque.Lazy.Defs where
 
-import Control.Monad (fail)
 import qualified Data.List as List
 import Deque.Prelude hiding (dropWhile, filter, head, init, last, null, reverse, tail, take, takeWhile)
-import qualified Deque.Prelude as Prelude
 
 -- |
 -- Lazy double-ended queue (aka Dequeue or Deque) based on head-tail linked list.

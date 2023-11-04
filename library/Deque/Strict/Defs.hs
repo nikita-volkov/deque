@@ -7,7 +7,6 @@
 -- the `Foldable` and `IsList` instances.
 module Deque.Strict.Defs where
 
-import Control.Monad (fail)
 import Deque.Prelude hiding (dropWhile, filter, head, init, last, null, reverse, tail, take, takeWhile)
 import qualified Deque.Prelude as Prelude
 import qualified StrictList
