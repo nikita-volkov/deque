@@ -7,7 +7,6 @@
 -- the `Foldable` and `IsList` instances.
 module Deque.Strict.Defs where
 
-import Control.Monad (fail)
 import Deque.Prelude hiding (dropWhile, filter, head, init, last, null, reverse, tail, take, takeWhile)
 import qualified Deque.Prelude as Prelude
 import qualified StrictList
@@ -239,10 +238,10 @@ init (Deque consList snocList) = case snocList of
   StrictList.Nil -> Deque StrictList.Nil (StrictList.initReversed consList)
   _ -> Deque consList (StrictList.tail snocList)
 
-instance Eq a => Eq (Deque a) where
+instance (Eq a) => Eq (Deque a) where
   (==) a b = toList a == toList b
 
-instance Show a => Show (Deque a) where
+instance (Show a) => Show (Deque a) where
   show = show . toList
 
 instance IsList (Deque a) where
@@ -307,8 +306,8 @@ deriving instance Generic (Deque a)
 
 deriving instance Generic1 Deque
 
-instance Hashable a => Hashable (Deque a)
+instance (Hashable a) => Hashable (Deque a)
 
-instance NFData a => NFData (Deque a)
+instance (NFData a) => NFData (Deque a)
 
 instance NFData1 Deque
