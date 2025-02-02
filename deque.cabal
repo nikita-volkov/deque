@@ -84,4 +84,4 @@ test-suite test
     , deque
     , rerebase <2
     , tasty >=0.12 && <2
-    , tasty-quickcheck >=0.9 && <0.11
+    , tasty-quickcheck >=0.9 && <0.12
