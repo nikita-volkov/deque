@@ -1,6 +1,6 @@
 cabal-version: 3.0
 name:          deque
-version:       0.4.4.1
+version:       0.4.4.2
 synopsis:      Double-ended queues
 description:
   Strict and lazy implementations of Double-Ended Queue (aka Dequeue or Deque)
@@ -17,7 +17,7 @@ license-file:  LICENSE
 
 source-repository head
   type:     git
-  location: git://github.com/nikita-volkov/deque.git
+  location: https://github.com/nikita-volkov/deque
 
 library
   hs-source-dirs:     library
