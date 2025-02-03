@@ -17,7 +17,7 @@ license-file:  LICENSE
 
 source-repository head
   type:     git
-  location: git://github.com/nikita-volkov/deque.git
+  location: https://github.com/nikita-volkov/deque
 
 library
   hs-source-dirs:     library
