@@ -15,19 +15,19 @@ import Deque.Prelude hiding (dropWhile, filter, head, init, last, null, reverse,
 data Deque a = Deque ![a] ![a]
 
 -- |
--- \(\mathcal{O}(1)\).
+-- \(\O(1)\).
 -- Construct from cons and snoc lists.
 fromConsAndSnocLists :: [a] -> [a] -> Deque a
 fromConsAndSnocLists consList snocList = Deque consList snocList
 
 -- |
--- \(\mathcal{O}(n)\).
+-- \(\O(n)\).
 -- Leave only the elements satisfying the predicate.
 filter :: (a -> Bool) -> Deque a -> Deque a
 filter predicate (Deque consList snocList) = Deque (List.filter predicate consList) (List.filter predicate snocList)
 
 -- |
--- \(\mathcal{O}(n)\).
+-- \(\O(n)\).
 -- Leave only the specified amount of first elements.
 take :: Int -> Deque a -> Deque a
 take amount (Deque consList snocList) =
@@ -48,7 +48,7 @@ take amount (Deque consList snocList) =
    in Deque newConsList []
 
 -- |
--- \(\mathcal{O}(n)\).
+-- \(\O(n)\).
 -- Drop the specified amount of first elements.
 drop :: Int -> Deque a -> Deque a
 drop amount (Deque consList snocList) =
@@ -67,7 +67,7 @@ drop amount (Deque consList snocList) =
    in buildFromConsList amount consList
 
 -- |
--- \(\mathcal{O}(n)\).
+-- \(\O(n)\).
 -- Leave only the first elements satisfying the predicate.
 takeWhile :: (a -> Bool) -> Deque a -> Deque a
 takeWhile predicate (Deque consList snocList) =
@@ -83,7 +83,7 @@ takeWhile predicate (Deque consList snocList) =
    in Deque newConsList []
 
 -- |
--- \(\mathcal{O}(n)\).
+-- \(\O(n)\).
 -- Drop the first elements satisfying the predicate.
 dropWhile :: (a -> Bool) -> Deque a -> Deque a
 dropWhile predicate (Deque consList snocList) =
@@ -93,7 +93,7 @@ dropWhile predicate (Deque consList snocList) =
         _ -> Deque newConsList snocList
 
 -- |
--- \(\mathcal{O}(n)\).
+-- \(\O(n)\).
 -- Perform `takeWhile` and `dropWhile` in a single operation.
 span :: (a -> Bool) -> Deque a -> (Deque a, Deque a)
 span predicate (Deque consList snocList) = case List.span predicate consList of
@@ -110,7 +110,7 @@ span predicate (Deque consList snocList) = case List.span predicate consList of
          in (prefix, suffix)
 
 -- |
--- \(\mathcal{O}(1)\), occasionally \(\mathcal{O}(n)\).
+-- \(\O(1)\), occasionally \(\O(n)\).
 -- Move the first element to the end.
 --
 -- @
@@ -121,7 +121,7 @@ shiftLeft :: Deque a -> Deque a
 shiftLeft deque = maybe deque (uncurry snoc) (uncons deque)
 
 -- |
--- \(\mathcal{O}(1)\), occasionally \(\mathcal{O}(n)\).
+-- \(\O(1)\), occasionally \(\O(n)\).
 -- Move the last element to the beginning.
 --
 -- @
@@ -132,19 +132,19 @@ shiftRight :: Deque a -> Deque a
 shiftRight deque = maybe deque (uncurry cons) (unsnoc deque)
 
 -- |
--- \(\mathcal{O}(1)\).
+-- \(\O(1)\).
 -- Add element in the beginning.
 cons :: a -> Deque a -> Deque a
 cons a (Deque consList snocList) = Deque (a : consList) snocList
 
 -- |
--- \(\mathcal{O}(1)\).
+-- \(\O(1)\).
 -- Add element in the ending.
 snoc :: a -> Deque a -> Deque a
 snoc a (Deque consList snocList) = Deque consList (a : snocList)
 
 -- |
--- \(\mathcal{O}(1)\), occasionally \(\mathcal{O}(n)\).
+-- \(\O(1)\), occasionally \(\O(n)\).
 -- Get the first element and deque without it if it's not empty.
 uncons :: Deque a -> Maybe (a, Deque a)
 uncons (Deque consList snocList) = case consList of
@@ -154,7 +154,7 @@ uncons (Deque consList snocList) = case consList of
     _ -> Nothing
 
 -- |
--- \(\mathcal{O}(1)\), occasionally \(\mathcal{O}(n)\).
+-- \(\O(1)\), occasionally \(\O(n)\).
 -- Get the last element and deque without it if it's not empty.
 unsnoc :: Deque a -> Maybe (a, Deque a)
 unsnoc (Deque consList snocList) = case snocList of
@@ -164,7 +164,7 @@ unsnoc (Deque consList snocList) = case snocList of
     _ -> Nothing
 
 -- |
--- \(\mathcal{O}(n)\).
+-- \(\O(n)\).
 prepend :: Deque a -> Deque a -> Deque a
 prepend (Deque consList1 snocList1) (Deque consList2 snocList2) =
   let consList = consList1
@@ -172,25 +172,25 @@ prepend (Deque consList1 snocList1) (Deque consList2 snocList2) =
    in Deque consList snocList
 
 -- |
--- \(\mathcal{O}(1)\).
+-- \(\O(1)\).
 -- Reverse the deque.
 reverse :: Deque a -> Deque a
 reverse (Deque consList snocList) = Deque snocList consList
 
 -- |
--- \(\mathcal{O}(1)\).
+-- \(\O(1)\).
 -- Check whether deque is empty.
 null :: Deque a -> Bool
 null (Deque consList snocList) = List.null snocList && List.null consList
 
 -- |
--- \(\mathcal{O}(1)\), occasionally \(\mathcal{O}(n)\).
+-- \(\O(1)\), occasionally \(\O(n)\).
 -- Get the first element if deque is not empty.
 head :: Deque a -> Maybe a
 head = fmap fst . uncons
 
 -- |
--- \(\mathcal{O}(1)\), occasionally \(\mathcal{O}(n)\).
+-- \(\O(1)\), occasionally \(\O(n)\).
 -- Keep all elements but the first one.
 --
 -- In case of empty deque returns an empty deque.
@@ -198,7 +198,7 @@ tail :: Deque a -> Deque a
 tail = fromMaybe <$> id <*> fmap snd . uncons
 
 -- |
--- \(\mathcal{O}(1)\), occasionally \(\mathcal{O}(n)\).
+-- \(\O(1)\), occasionally \(\O(n)\).
 -- Keep all elements but the last one.
 --
 -- In case of empty deque returns an empty deque.
@@ -206,7 +206,7 @@ init :: Deque a -> Deque a
 init = fromMaybe <$> id <*> fmap snd . unsnoc
 
 -- |
--- \(\mathcal{O}(1)\), occasionally \(\mathcal{O}(n)\).
+-- \(\O(1)\), occasionally \(\O(n)\).
 -- Get the last element if deque is not empty.
 last :: Deque a -> Maybe a
 last = fmap fst . unsnoc
@@ -270,7 +270,7 @@ instance MonadFail Deque where
   fail = const mempty
 
 -- |
--- \(\mathcal{O}(1)\).
+-- \(\O(1)\).
 instance IsList (Deque a) where
   type Item (Deque a) = a
   fromList = flip Deque []
