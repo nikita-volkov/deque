@@ -57,7 +57,7 @@ library
     deepseq >=1.4.3 && <2,
     hashable >=1.2 && <2,
     mtl >=2.2 && <3,
-    strict-list >=0.1.6 && <0.2,
+    strict-list >=1 && <1.1,
 
 test-suite test
   type: exitcode-stdio-1.0

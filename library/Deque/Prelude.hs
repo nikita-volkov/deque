@@ -60,6 +60,7 @@ import GHC.Exts as Exports (IsList (..), groupWith, inline, lazy, sortWith)
 import GHC.Generics as Exports (Generic, Generic1)
 import GHC.IO.Exception as Exports
 import Numeric as Exports
+import StrictList as Exports (StrictList)
 import System.Environment as Exports
 import System.Exit as Exports
 import System.IO as Exports
