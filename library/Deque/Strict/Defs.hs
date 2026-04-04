@@ -16,35 +16,35 @@ import qualified StrictList
 data Deque a = Deque !(StrictList a) !(StrictList a)
 
 -- |
--- \(\O(n)\).
+-- \(O(n)\).
 -- Construct from cons and snoc lists.
 {-# INLINE fromConsAndSnocLists #-}
 fromConsAndSnocLists :: [a] -> [a] -> Deque a
 fromConsAndSnocLists consList snocList = Deque (fromList consList) (fromList snocList)
 
 -- |
--- \(\O(1)\).
+-- \(O(1)\).
 -- Add element in the beginning.
 {-# INLINE cons #-}
 cons :: a -> Deque a -> Deque a
 cons a (Deque consList snocList) = Deque (StrictList.Cons a consList) snocList
 
 -- |
--- \(\O(1)\).
+-- \(O(1)\).
 -- Add element in the ending.
 {-# INLINE snoc #-}
 snoc :: a -> Deque a -> Deque a
 snoc a (Deque consList snocList) = Deque consList (StrictList.Cons a snocList)
 
 -- |
--- \(\O(1)\).
+-- \(O(1)\).
 -- Reverse the deque.
 {-# INLINE reverse #-}
 reverse :: Deque a -> Deque a
 reverse (Deque consList snocList) = Deque snocList consList
 
 -- |
--- \(\O(1)\), occasionally \(\O(n)\).
+-- \(O(1)\), occasionally \(O(n)\).
 -- Move the first element to the end.
 --
 -- @
@@ -56,7 +56,7 @@ shiftLeft :: Deque a -> Deque a
 shiftLeft deque = maybe deque (uncurry snoc) (uncons deque)
 
 -- |
--- \(\O(1)\), occasionally \(\O(n)\).
+-- \(O(1)\), occasionally \(O(n)\).
 -- Move the last element to the beginning.
 --
 -- @
@@ -71,7 +71,7 @@ balanceLeft :: Deque a -> Deque a
 balanceLeft = error "TODO"
 
 -- |
--- \(\O(n)\).
+-- \(O(n)\).
 -- Leave only the elements satisfying the predicate.
 {-# INLINE filter #-}
 filter :: (a -> Bool) -> Deque a -> Deque a
@@ -83,7 +83,7 @@ filter predicate (Deque consList snocList) =
    in Deque newConsList StrictList.Nil
 
 -- |
--- \(\O(n)\).
+-- \(O(n)\).
 -- Leave only the specified amount of first elements.
 take :: Int -> Deque a -> Deque a
 take amount (Deque consList snocList) =
@@ -104,7 +104,7 @@ take amount (Deque consList snocList) =
    in Deque StrictList.Nil newSnocList
 
 -- |
--- \(\O(n)\).
+-- \(O(n)\).
 -- Drop the specified amount of first elements.
 drop :: Int -> Deque a -> Deque a
 drop amount (Deque consList snocList) =
@@ -123,7 +123,7 @@ drop amount (Deque consList snocList) =
    in buildFromConsList amount consList
 
 -- |
--- \(\O(n)\).
+-- \(O(n)\).
 -- Leave only the first elements satisfying the predicate.
 {-# INLINE takeWhile #-}
 takeWhile :: (a -> Bool) -> Deque a -> Deque a
@@ -140,7 +140,7 @@ takeWhile predicate (Deque consList snocList) =
    in Deque newConsList StrictList.Nil
 
 -- |
--- \(\O(n)\).
+-- \(O(n)\).
 -- Drop the first elements satisfying the predicate.
 {-# INLINE dropWhile #-}
 dropWhile :: (a -> Bool) -> Deque a -> Deque a
@@ -151,7 +151,7 @@ dropWhile predicate (Deque consList snocList) =
         _ -> Deque newConsList snocList
 
 -- |
--- \(\O(n)\).
+-- \(O(n)\).
 -- Perform `takeWhile` and `dropWhile` in a single operation.
 span :: (a -> Bool) -> Deque a -> (Deque a, Deque a)
 span predicate (Deque consList snocList) = case StrictList.spanReversed predicate consList of
@@ -168,7 +168,7 @@ span predicate (Deque consList snocList) = case StrictList.spanReversed predicat
          in (prefix, suffix)
 
 -- |
--- \(\O(1)\), occasionally \(\O(n)\).
+-- \(O(1)\), occasionally \(O(n)\).
 -- Get the first element and deque without it if it's not empty.
 {-# INLINE uncons #-}
 uncons :: Deque a -> Maybe (a, Deque a)
@@ -179,7 +179,7 @@ uncons (Deque consList snocList) = case consList of
     _ -> Nothing
 
 -- |
--- \(\O(1)\), occasionally \(\O(n)\).
+-- \(O(1)\), occasionally \(O(n)\).
 -- Get the last element and deque without it if it's not empty.
 {-# INLINE unsnoc #-}
 unsnoc :: Deque a -> Maybe (a, Deque a)
@@ -190,7 +190,7 @@ unsnoc (Deque consList snocList) = case snocList of
     _ -> Nothing
 
 -- |
--- \(\O(1)\).
+-- \(O(1)\).
 -- Check whether deque is empty.
 {-# INLINE null #-}
 null :: Deque a -> Bool
@@ -199,7 +199,7 @@ null = \case
   _ -> False
 
 -- |
--- \(\O(1)\), occasionally \(\O(n)\).
+-- \(O(1)\), occasionally \(O(n)\).
 -- Get the first element if deque is not empty.
 {-# INLINE head #-}
 head :: Deque a -> Maybe a
@@ -208,7 +208,7 @@ head (Deque consList snocList) = case consList of
   _ -> StrictList.last snocList
 
 -- |
--- \(\O(1)\), occasionally \(\O(n)\).
+-- \(O(1)\), occasionally \(O(n)\).
 -- Get the last element if deque is not empty.
 {-# INLINE last #-}
 last :: Deque a -> Maybe a
@@ -217,7 +217,7 @@ last (Deque consList snocList) = case snocList of
   _ -> StrictList.last consList
 
 -- |
--- \(\O(1)\), occasionally \(\O(n)\).
+-- \(O(1)\), occasionally \(O(n)\).
 -- Keep all elements but the first one.
 --
 -- In case of empty deque returns an empty deque.
@@ -228,7 +228,7 @@ tail (Deque consList snocList) = case consList of
   _ -> Deque (StrictList.initReversed snocList) StrictList.Nil
 
 -- |
--- \(\O(1)\), occasionally \(\O(n)\).
+-- \(O(1)\), occasionally \(O(n)\).
 -- Keep all elements but the last one.
 --
 -- In case of empty deque returns an empty deque.
