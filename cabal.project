@@ -1,1 +1,6 @@
 packages: .
+
+allow-newer:
+  *:base,
+  *:ghc,
+  *:template-haskell,
